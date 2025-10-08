@@ -38,7 +38,7 @@ public class Usuario {
     private String correo;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference(value = "ref-usuario-tipo-usuario")
     @JoinColumn(name = "id_tipo_usuario", nullable = false, foreignKey = @ForeignKey(name = "fk_tipo_usuario"))
     private TipoUsuario tipoUsuario;
 

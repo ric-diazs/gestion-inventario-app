@@ -27,6 +27,6 @@ public class TipoUsuario {
     private String nombreTipo;
 
     @OneToMany(mappedBy = "tipoUsuario")
-    @JsonManagedReference
+    @JsonManagedReference(value = "ref-usuario-tipo-usuario")
     private List<Usuario> usuarios;
 }
