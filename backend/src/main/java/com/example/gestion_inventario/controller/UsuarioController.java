@@ -69,11 +69,11 @@ public class UsuarioController {
             String nombreUsuario = usuarioService.definirNombreUsuario(usuario.getNombre(), usuario.getApellidos());
 
             usuarioActualizar.setNombreUsuario(nombreUsuario);
-            usuarioActualizar.setCorreo(usuarioService.definirCorreo(usuarioActualizar.getNombreUsuario());
+            usuarioActualizar.setCorreo(usuarioService.definirCorreo(usuarioActualizar.getNombreUsuario()));
 
             usuarioActualizar.setTipoUsuario(usuario.getTipoUsuario());
 
-            usuarioService.guardarUsuario(usuarioActualizar)
+            usuarioService.guardarUsuario(usuarioActualizar);
 
             return ResponseEntity.ok(usuario);
         } catch(Exception e) {

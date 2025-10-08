@@ -54,7 +54,7 @@ public class ReporteProblemaController {
     @PutMapping("/{id}")
     public ResponseEntity<ReporteProblema> actualizarReporteProblema(@PathVariable Integer id, @RequestBody ReporteProblema reporteProblema) {
         try {
-            ReporteProblema reporteProblemaActualizar = reporteProblemaService.obtenerUnReporteProblema(Integer id);
+            ReporteProblema reporteProblemaActualizar = reporteProblemaService.obtenerUnReporteProblema(id);
 
             reporteProblemaActualizar.setId(id);
             reporteProblemaActualizar.setDescripcion(reporteProblema.getDescripcion());

@@ -23,7 +23,7 @@ public class TipoUsuarioController {
         List<TipoUsuario> tiposUsuarios = tipoUsuarioService.obtenerTiposUsuario();
 
         if(tiposUsuarios.isEmpty()) {
-            return ResponseEntity.noContent().build()
+            return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(tiposUsuarios);

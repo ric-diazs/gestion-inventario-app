@@ -24,7 +24,7 @@ public class TipoProblemaController {
 
     @GetMapping
     public ResponseEntity<List<TipoProblema>>obtenerTiposProblema() {
-        List<TipoProblema> tiposProblema = tipoProblemaService.obtenerTipoProblemas;
+        List<TipoProblema> tiposProblema = tipoProblemaService.obtenerTipoProblemas();
 
         if(tiposProblema.isEmpty()) {
             return ResponseEntity.noContent().build();
