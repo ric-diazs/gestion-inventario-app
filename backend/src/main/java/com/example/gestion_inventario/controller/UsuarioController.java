@@ -73,6 +73,8 @@ public class UsuarioController {
 
             usuarioActualizar.setTipoUsuario(usuario.getTipoUsuario());
 
+            usuarioService.guardarUsuario(usuarioActualizar)
+
             return ResponseEntity.ok(usuario);
         } catch(Exception e) {
             return ResponseEntity.notFound().build();

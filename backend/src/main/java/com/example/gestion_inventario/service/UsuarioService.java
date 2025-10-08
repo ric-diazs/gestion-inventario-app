@@ -35,7 +35,7 @@ public class UsuarioService {
 
     // Funcion para eliminar a un usuario
     public void eliminarUsuario(Integer id) {
-        return usuarioRepository.deleteById(id);
+        usuarioRepository.deleteById(id);
     }
 
 
