@@ -1,0 +1,41 @@
+package com.example.gestion_inventario.navigation
+
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.compose.runtime.Composable
+
+import com.example.gestion_inventario.ui.screen.AdminHomeScreen
+import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
+import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
+import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
+
+@Composable
+fun AppNavigation() {
+	val navController = rememberNavController()
+
+	// Se pueden agregar los viewModels aca
+
+	// Implementacion de navegaciones
+	NavHost(
+		navController = navController,
+		startDestination = Routes.HomeAdmin.ruta
+	) {
+		composable(route = Routes.HomeAdmin.ruta) {
+			AdminHomeScreen(navController)
+		}
+
+		composable(route = Routes.ProductosAdmin.ruta) {
+			ProductosAdminScreen(navController)
+		}
+
+		composable(route = Routes.UsuariosAdmin.ruta) {
+			UsuariosAdminScreen(navController)
+		}
+
+		composable(route = Routes.ReportarProblema.ruta) {
+			ReportarProblemaScreen(navController)
+		}
+	}
+
+}
