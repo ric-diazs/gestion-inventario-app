@@ -1,12 +1,15 @@
 package com.example.gestion_inventario.navigation
 
+import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
 
 import com.example.gestion_inventario.ui.screen.AdminHomeScreen
+import com.example.gestion_inventario.ui.screen.AgregarProductoScreen
 import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
+import com.example.gestion_inventario.ui.screen.RegistroUsuarioAdminScreen
 import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
 import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
 
@@ -36,6 +39,17 @@ fun AppNavigation() {
 		composable(route = Routes.ReportarProblema.ruta) {
 			ReportarProblemaScreen(navController)
 		}
+		composable(route = Routes.AgregarProducto.ruta) {
+			AgregarProductoScreen(navController)
+
+		}
+
+		composable(route = Routes.RegistroUsuarioAdmin.ruta) {
+			RegistroUsuarioAdminScreen(navController)
+
+
+		}
+
 	}
 
 }
