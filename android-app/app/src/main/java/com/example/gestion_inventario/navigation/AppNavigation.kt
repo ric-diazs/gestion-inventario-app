@@ -1,6 +1,5 @@
 package com.example.gestion_inventario.navigation
 
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -14,11 +13,11 @@ import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(authViewModel: AuthViewModel) {
 	val navController = rememberNavController()
 
 	// Se pueden agregar los viewModels aca
-	val authViewModel: AuthViewModel = viewModel()
+	//val authViewModel: AuthViewModel = viewModel()
 
 	// Implementacion de navegaciones
 	NavHost(

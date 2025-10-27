@@ -100,15 +100,17 @@ fun LoginScreen(
 
 		FilledTonalButton(
 			onClick = {
-				if(viewModel.canSubmitLogin(estadoLogin.email, estadoLogin.password)) {
-					progresoHabilitado = true
+				// Se lanza corrutina porque 'canSubmitLogin()' es un metodo asincrono
+				CoroutineScope(Dispatchers.Main).launch {
+					val sePuedeIniciarSesion = viewModel.canSubmitLogin()
 
-					// Simulacion de tarea asincronica (luego se cambiara a implementacion de SQLite)
-					CoroutineScope(Dispatchers.Main).launch {
-						delay(2000L) // Simulacion de 2 segundos
-						progresoHabilitado = false // Despues de los 2 segundos, desaparece el circulo de progreso
+					if(sePuedeIniciarSesion) {
+						progresoHabilitado = true
 
-						navController.navigate(route = Routes.HomeAdmin.ruta) // Por ahora, solo se navega a vista 'Home'
+						delay(2000L) // Simulacion de carga: Demora de 2 segundos
+
+						navController.navigate(route = Routes.HomeAdmin.ruta)
+
 						viewModel.limpiarCamposLogin() // Limpieza de campos
 					}
 				}
@@ -117,7 +119,7 @@ fun LoginScreen(
 		) {
 			if(progresoHabilitado){
 				CircularProgressIndicator(
-					modifier = Modifier.padding(6.dp),
+					modifier = Modifier.padding(2.dp),
 					strokeWidth = 2.dp,
 					color = Color.Red
 				)

@@ -2,14 +2,18 @@ package com.example.gestion_inventario.viewmodel
 
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
+import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.model.LoginUiState
 
 // Gestion de estado e implementacion de logica de negocio de formularios
-class AuthViewModel: ViewModel() {
+// Se agrega inyeccion de dependencia al establecer parametro 'repository'
+class AuthViewModel(private val repository: UsuarioRepository): ViewModel() {
 	// Esta variable manejara el estado y podra ser observado por los componentes UI
 	// del login (gracias a StateFlow) que permitira que reaccionen ante sus cambios.
 	// Es privado y mutable, por lo que solo sera modificado solo desde esta clase
@@ -22,21 +26,21 @@ class AuthViewModel: ViewModel() {
 	
 	/*==== Funciones para validar login. ====*/
 	// Validar si campo esta vacio
-	fun estaVacio(campo: String): Boolean {
-		if(campo.isBlank()) return true else return false
+	fun estaVacio(campo: String?): Boolean {
+		if(campo.isNullOrBlank()) return true else return false
 	}
 
 	// Validacion de campo 'email'
-	fun validarEmail(email: String): String? {
+	fun validarEmail(email: String?): String? {
 		if(estaVacio(email)) return "Debe ingresar un email."
 
-		val patronCorrecto = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+		val patronCorrecto = Patterns.EMAIL_ADDRESS.matcher(email!!).matches()
 
 		if(!patronCorrecto) return "Formato de email invalido." else return null
 	}
 
 	// Validacion de campo 'password'
-	fun validarPasswordLogin(password: String): String? {
+	fun validarPasswordLogin(password: String?): String? {
 		if(estaVacio(password)) return "Debe ingresar su password asociado a su email." else return null
 	}
 
@@ -53,18 +57,24 @@ class AuthViewModel: ViewModel() {
 	}
 
 	/*==== Funcion para permitir envio de formulario login. ====*/
-	fun canSubmitLogin(valorEmail: String, valorPassword: String): Boolean {
-		val validacionEmail = validarEmail(valorEmail)
-		val validacionPassword = validarPasswordLogin(valorPassword)
+	suspend fun canSubmitLogin(): Boolean {
+		val estadoLogin = _login.value // Se obtiene el estado actual del objeto 'LoginUiState' con sus atributos
+		
+		// Actualizacion del estado: Usado para mostrar mensaje de error si se intenta
+		// iniciar sesion sin haber llenado los campos de texto
+		val msgErrorUpdatedEmail = validarEmail(estadoLogin.email)
+		val msgErrorUpdatedPass = validarPasswordLogin(estadoLogin.password)
 
-		// Se actualiza el estado de los errores (util cuando se presiona boton 'iniciar sesion' y no hay datos ingresados aun)
-		_login.update{it.copy(emailError = validacionEmail, passwordError = validacionPassword)}
+		_login.update{it.copy(emailError = msgErrorUpdatedEmail, passwordError = msgErrorUpdatedPass)}
 
-		if((validacionEmail == null) && (validacionPassword == null)) {
-			return true
-		} else {
+		// 1era validacion: Que no hayan errores tales como campos vacios (email y password)
+		if((msgErrorUpdatedEmail != null) || (msgErrorUpdatedPass != null)) {
 			return false
 		}
+
+		// 2da validacion: Ver si credenciales son las correctas ('.isSuccess == true' si lo son, sino devolvera 'false')
+		val resultBusquedaUsuario = repository.validarLogin(estadoLogin.email.trim(), estadoLogin.password)
+    	return resultBusquedaUsuario.isSuccess
 	}
 
 	/*==== Funcion para limpiar campos de texto del login. ====*/
