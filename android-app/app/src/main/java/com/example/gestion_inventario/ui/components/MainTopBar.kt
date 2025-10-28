@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,6 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.material.icons.filled.PersonAdd
+
 
 import com.example.gestion_inventario.R
 import com.example.gestion_inventario.navigation.Routes
@@ -55,6 +59,7 @@ fun MainTopBar(
             IconButton(onClick = {navController.navigate(route = Routes.ReportarProblema.ruta)}) {
                 Icon(imageVector = Icons.Filled.Warning, contentDescription = "Icono de Reportar")
             }
+
         }
     )
 }
