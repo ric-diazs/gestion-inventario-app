@@ -37,7 +37,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		}
 
 		composable(route = Routes.ReportarProblema.ruta) {
-			ReportarProblemaScreen(navController)
+			ReportarProblemaScreen(navController, authViewModel)
 		}
 
 		composable(route = Routes.Login.ruta) {
