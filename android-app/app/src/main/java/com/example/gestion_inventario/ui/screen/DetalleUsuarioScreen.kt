@@ -12,9 +12,11 @@ import com.example.gestion_inventario.data.local.database.AppDatabase
 import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.ui.components.MainDrawer
-import com.example.gestion_inventario.ui.components.MainTopBar
+//import com.example.gestion_inventario.ui.components.MainTopBar
+import com.example.gestion_inventario.ui.components.SecundaryTopBar
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
@@ -42,7 +44,8 @@ fun DetalleUsuarioScreen(
 
     MainDrawer(navController, drawerState, scope) {
         Scaffold(
-            topBar = { MainTopBar(navController, drawerState, scope) }
+            //topBar = { MainTopBar(navController, drawerState, scope) }
+            topBar = {SecundaryTopBar(Routes.UsuariosAdmin, navController)}
         ) { innerPadding ->
             Column(
                 modifier = Modifier
