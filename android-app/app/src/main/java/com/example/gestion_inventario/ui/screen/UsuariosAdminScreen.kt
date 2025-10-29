@@ -71,7 +71,7 @@ fun UsuariosAdminScreen(
     // Implementacion de Drawer
     MainDrawer(navController, drawerState, scope){    
     	Scaffold(
-    		topBar = {MainTopBar(navController, drawerState, scope)}
+    		topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
     	){ innerPadding ->
     		Column(
     			modifier = Modifier

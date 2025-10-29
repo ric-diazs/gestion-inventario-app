@@ -13,6 +13,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,14 +25,22 @@ import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.R
 import com.example.gestion_inventario.navigation.Routes
+import com.example.gestion_inventario.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
 	navController: NavController,
     drawerState: DrawerState,
-    scope: CoroutineScope
+    scope: CoroutineScope,
+    viewModel: AuthViewModel
 ) {
+    // Se accede al valor actual del estado del usuario logueado exitosamente a traves del ViewModel
+    val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
+
+    // Se accede al tipo de usuario logueado para hacer restricciones a vistas si no es 'Admin'
+    val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
+
 	// Barra de navegacion (topbar): Es un TopBar centrado
 	CenterAlignedTopAppBar(
         title = {
@@ -57,8 +66,11 @@ fun MainTopBar(
                 Icon(painter = painterResource(id = R.drawable.ic_inventory), contentDescription = "Icono de Inventario de Productos", modifier = Modifier.size(24.dp))
             }
 
-            IconButton(onClick = {navController.navigate(route = Routes.UsuariosAdmin.ruta)}) {
-                 Icon(painter = painterResource(id = R.drawable.ic_groups), contentDescription = "Icono de Usuarios", modifier = Modifier.size(24.dp))
+            // Restriccion: Solo usuario 'Admin' puede acceder a esta vista
+            if(tipoUsuario == "Admin") {
+                IconButton(onClick = {navController.navigate(route = Routes.UsuariosAdmin.ruta)}) {
+                    Icon(painter = painterResource(id = R.drawable.ic_groups), contentDescription = "Icono de Usuarios", modifier = Modifier.size(24.dp))
+                }
             }
 
             IconButton(onClick = {navController.navigate(route = Routes.ReportarProblema.ruta)}) {

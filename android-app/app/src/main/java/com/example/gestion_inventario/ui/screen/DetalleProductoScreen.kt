@@ -52,6 +52,12 @@ fun DetalleProductoScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    // Se accede al valor actual del estado del usuario logueado exitosamente a traves del ViewModel
+    val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
+
+    // Se accede al tipo de usuario logueado para hacer restricciones a vistas si no es 'Admin'
+    val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
+
     // Cargar usuario al entrar
     LaunchedEffect(productoId) {
         viewModel.cargarProductoPorId(productoId)
@@ -84,32 +90,35 @@ fun DetalleProductoScreen(
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // 🔹 Botón para editar
-                    Button(
-                        onClick = {
-                            navController.navigate("editarProducto/${producto.id}")
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Editar Producto")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // 🔹 Botón para eliminar
-                    Button(
-                        onClick = {
-                            scope.launch {
-                                viewModel.eliminarProducto(producto.id)
-                                navController.popBackStack()
-                            }
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.error
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Eliminar Producto")
+                    // Se restringe a que solo un usuario de tipo "Admin" pueda editar o eliminar productos
+                    if(tipoUsuario == "Admin"){
+                        // 🔹 Botón para editar
+                        Button(
+                            onClick = {
+                                navController.navigate("editarProducto/${producto.id}")
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Editar Producto")
+                        }
+    
+                        Spacer(modifier = Modifier.height(8.dp))
+    
+                        // 🔹 Botón para eliminar
+                        Button(
+                            onClick = {
+                                scope.launch {
+                                    viewModel.eliminarProducto(producto.id)
+                                    navController.popBackStack()
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.error
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = "Eliminar Producto")
+                        }
                     }
                 } ?: Text(text = "Cargando producto...")
             }

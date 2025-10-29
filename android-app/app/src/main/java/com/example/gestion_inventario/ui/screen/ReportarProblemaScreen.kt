@@ -86,7 +86,7 @@ fun ReportarProblemaScreen(
     // Implementacion de Drawer
     MainDrawer(navController, drawerState, scopeDrawer){
     	Scaffold(
-    		topBar = {MainTopBar(navController, drawerState, scopeDrawer)},
+    		topBar = {MainTopBar(navController, drawerState, scopeDrawer, viewModel)},
     		snackbarHost = {SnackbarHost(snackBarHostState)},
     		modifier = Modifier.fillMaxSize()
     	){ innerPadding ->
