@@ -3,6 +3,7 @@ package com.example.gestion_inventario.viewmodel
 import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gestion_inventario.data.local.entity.ProductoEntity
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -272,6 +273,43 @@ class AuthViewModel(
 	}
 
 
+	private val _producto = MutableStateFlow<List<ProductoEntity>>(emptyList())
+	val productos: StateFlow<List<ProductoEntity>> = _producto
+
+
+	// Cargar los usuarios desde el repositorio
+	fun cargarProductos() {
+		viewModelScope.launch {
+			productoRepository.obtenerProductos().collect { lista ->
+				_producto.value = lista
+			}
+		}
+	}
+
+	private val _productoSeleccionado = MutableStateFlow<ProductoEntity?>(null)
+
+	val productoSeleccionado: StateFlow<ProductoEntity?> = _productoSeleccionado
+
+	fun cargarProductoPorId(id: Long){
+		viewModelScope.launch {
+			_productoSeleccionado.value = productoRepository.obtenerProductoPorId(id)
+		}
+	}
+
+	fun eliminarProducto(id: Long) {
+		viewModelScope.launch {
+			productoRepository.eliminarProducto(id)
+		}
+	}
+
+
+	fun actualizarProducto(producto: ProductoEntity, onSuccess: () -> Unit) {
+		viewModelScope.launch {
+			productoRepository.actualizarProducto(producto)
+			onSuccess()
+		}
+	}
+
 
 	// Funcion para validar si se puede registrar el producto
 	fun canSubmitRegistrarProd():Boolean {
@@ -432,6 +470,9 @@ class AuthViewModel(
 			}
 		}
 	}
+
+
+
 
 	private val _usuarioSeleccionado = MutableStateFlow<UsuarioEntity?>(null)
 	val usuarioSeleccionado: StateFlow<UsuarioEntity?> = _usuarioSeleccionado

@@ -10,7 +10,9 @@ import androidx.navigation.navArgument
 
 import com.example.gestion_inventario.ui.screen.AdminHomeScreen
 import com.example.gestion_inventario.ui.screen.AgregarProductoScreen
+import com.example.gestion_inventario.ui.screen.DetalleProductoScreen
 import com.example.gestion_inventario.ui.screen.DetalleUsuarioScreen
+import com.example.gestion_inventario.ui.screen.EditarProductoScreen
 import com.example.gestion_inventario.ui.screen.EditarUsuarioScreen
 import com.example.gestion_inventario.ui.screen.LoginScreen
 import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
@@ -78,6 +80,22 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		) { backStackEntry ->
 			val usuarioId = backStackEntry.arguments?.getLong("usuarioId") ?: 0L
 			EditarUsuarioScreen(navController, usuarioId)
+		}
+		
+		composable(
+			route = "detalleProducto/{productoId}",
+			arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+		) { backStackEntry ->
+			val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
+			DetalleProductoScreen(navController, productoId)
+		}
+
+		composable(
+			route = "editarProducto/{productoId}",
+			arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+		) { backStackEntry ->
+			val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
+			EditarProductoScreen(navController, productoId)
 		}
 
 	}
