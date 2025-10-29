@@ -18,4 +18,38 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 			return Result.failure(IllegalArgumentException("Ingresó las credenciales incorrectas"))
 		}
 	}
+
+	suspend fun registrarUsuario(
+		nombre: String,
+		apellido: String,
+		email: String,
+		password: String,
+		tipoUsuario: String
+	): Result<Long> {
+
+
+		// Verificar si el correo ya existe
+		val exists = usuarioDao.obtenerUsuarioPorEmail(email) != null
+		if (exists) {
+			return Result.failure(IllegalStateException("El correo ya está registrado"))
+		}
+
+		// Crear usuario nuevo
+		val id = usuarioDao.upsertUsuario(
+			UsuarioEntity(
+				nombre = nombre,
+				apellidos = apellido,
+				email = email,
+				password = password,
+				tipoUsuario = tipoUsuario
+			)
+		)
+
+		return Result.success(id)
+	}
+
+
+
+
+
 }

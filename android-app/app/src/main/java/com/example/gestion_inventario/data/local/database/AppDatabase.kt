@@ -10,18 +10,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.data.local.dao.UsuarioDao
+import com.example.gestion_inventario.data.local.dao.ProductoDao
 import com.example.gestion_inventario.data.local.entity.UsuarioEntity
+import com.example.gestion_inventario.data.local.entity.ProductoEntity
 
 // Definicion inicial basado en:
 // https://developer.android.com/codelabs/basic-android-kotlin-compose-persisting-data-room#6
 @Database(
-	entities = [UsuarioEntity::class],
+	entities = [UsuarioEntity::class, ProductoEntity::class],
 	version = 1,
 	exportSchema = false
 )
 abstract class AppDatabase: RoomDatabase() {
 	// Se inyecta el dao
 	abstract fun usuarioDao(): UsuarioDao
+
+	abstract fun productoDao(): ProductoDao
 
 	// Para acceder a los metodos que permiten crear (create) y obtener (get) la base de datos
 	// Tambien usa el nombre de la clase como cualificador (qualifier)
@@ -42,38 +46,38 @@ abstract class AppDatabase: RoomDatabase() {
 					AppDatabase::class.java,
 					DB_NAME
 				)
-				// Metodo callback para prepoblar la base de datos con un usuario al crearla
-				.addCallback(object: RoomDatabase.Callback() {
-					override fun onCreate(db: SupportSQLiteDatabase) {
-						super.onCreate(db)
+					// Metodo callback para prepoblar la base de datos con un usuario al crearla
+					.addCallback(object: RoomDatabase.Callback() {
+						override fun onCreate(db: SupportSQLiteDatabase) {
+							super.onCreate(db)
 
-						// Insercion inicial de datos se hace mediante una corrutina
-						CoroutineScope(Dispatchers.IO).launch {
-							// Se llama al DAO de la entidad UsuarioEntity para usar metodo que
-							// entrega la cantidad de usuarios que en la tabla 'usuario'
-							val dao = getDatabase(context).usuarioDao()
-							var cantUsuarios = dao.contarUsuarios()
+							// Insercion inicial de datos se hace mediante una corrutina
+							CoroutineScope(Dispatchers.IO).launch {
+								// Se llama al DAO de la entidad UsuarioEntity para usar metodo que
+								// entrega la cantidad de usuarios que en la tabla 'usuario'
+								val dao = getDatabase(context).usuarioDao()
+								var cantUsuarios = dao.contarUsuarios()
 
-							// Prepoblamiento de datos: Se inserta un usuario 'administrador'
-							val registroInicial = listOf(
-								UsuarioEntity(
-									nombre = "John",
-									apellidos = "Doe",
-									email = "j.doe@admin.com",
-									password = "*admin_12345Joe",
-									tipoUsuario = 1
+								// Prepoblamiento de datos: Se inserta un usuario 'administrador'
+								val registroInicial = listOf(
+									UsuarioEntity(
+										nombre = "John",
+										apellidos = "Doe",
+										email = "j.doe@admin.com",
+										password = "*admin_12345Joe",
+										tipoUsuario = "Admin"
+									)
 								)
-							)
 
-							// Se inserta este registro inicial solo si la tabla 'usuario' esta vacia
-							if(cantUsuarios == 0) {
-								registroInicial.forEach{ dao.upsertUsuario(it) }
+								// Se inserta este registro inicial solo si la tabla 'usuario' esta vacia
+								if(cantUsuarios == 0) {
+									registroInicial.forEach{ dao.upsertUsuario(it) }
+								}
 							}
 						}
-					}
-				})
-				 .fallbackToDestructiveMigration() // Estrategia de migracion (en este caso se destruye y recrea, pero se usa cuando cambia el esquema y deben moverse los datos sin perderlos)
-				 .build()
+					})
+					.fallbackToDestructiveMigration() // Estrategia de migracion (en este caso se destruye y recrea, pero se usa cuando cambia el esquema y deben moverse los datos sin perderlos)
+					.build()
 
 				INSTANCE = instance
 

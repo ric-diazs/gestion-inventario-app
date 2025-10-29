@@ -3,8 +3,13 @@ package com.example.gestion_inventario.ui.screen
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.gestion_inventario.navigation.Routes
 
 import com.example.gestion_inventario.ui.components.MainTopBar
 
@@ -39,6 +45,22 @@ fun ProductosAdminScreen(
 	            textAlign = TextAlign.Center,
 	            style = MaterialTheme.typography.titleLarge
 			)
+
+			Button(
+				//onClick = { navController.navigate(Routes.AgregarProducto.ruta) },
+				onClick = {navController.navigate(Routes.AgregarProducto.ruta)},
+				modifier = Modifier
+					.padding(top = 8.dp)
+					.fillMaxWidth(0.6f)
+					.height(50.dp)
+			) {
+				Icon(
+					imageVector = Icons.Filled.Add,
+					contentDescription = "Agregar Producto",
+					modifier = Modifier.padding(end = 8.dp)
+				)
+				Text(text = "Agregar Producto")
+			}
 		}
 	}
 }

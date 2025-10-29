@@ -13,5 +13,5 @@ data class UsuarioEntity(
 	val apellidos: String,
 	val email: String,
 	val password: String,
-	val tipoUsuario: Long
+	val tipoUsuario: String
 )

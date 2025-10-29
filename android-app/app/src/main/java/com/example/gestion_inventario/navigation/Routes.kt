@@ -6,4 +6,8 @@ sealed class Routes(val ruta: String) {
 	data object ProductosAdmin : Routes(ruta ="productosAdmin")
 	data object UsuariosAdmin : Routes(ruta ="usuariosAdmin")
 	data object ReportarProblema : Routes(ruta ="reportarProblema")
+
+	data object AgregarProducto : Routes(ruta ="agregarProducto")
+
+	data object RegistrarUsuario : Routes(ruta ="registrarUsuario")
 }

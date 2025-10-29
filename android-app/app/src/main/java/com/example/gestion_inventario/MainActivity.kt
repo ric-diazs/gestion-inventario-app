@@ -17,6 +17,7 @@ import com.example.gestion_inventario.ui.theme.Gestion_inventarioTheme
 
 import com.example.gestion_inventario.data.local.database.AppDatabase
 import com.example.gestion_inventario.data.repository.UsuarioRepository
+import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.navigation.AppNavigation
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
@@ -32,12 +33,14 @@ class MainActivity : ComponentActivity() {
             val bbdd = AppDatabase.getDatabase(context) // Se obtiene solo una instancia (singleton) de la BBDD
 
             val usuarioDao = bbdd.usuarioDao()
+            val productoDao = bbdd.productoDao()
 
             val usuarioRepository = UsuarioRepository(usuarioDao)
+            val productoRepository = ProductoRepository(productoDao)
 
             // Ahora usamos ViewModel con Factory (mas info aca: https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories)
             val authViewModel: AuthViewModel = viewModel(
-                factory = AuthViewModelFactory(usuarioRepository)
+                factory = AuthViewModelFactory(usuarioRepository, productoRepository)
             )
 
             Gestion_inventarioTheme {

@@ -6,8 +6,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.runtime.Composable
 
 import com.example.gestion_inventario.ui.screen.AdminHomeScreen
+import com.example.gestion_inventario.ui.screen.AgregarProductoScreen
 import com.example.gestion_inventario.ui.screen.LoginScreen
 import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
+import com.example.gestion_inventario.ui.screen.RegistroUsuarioScreen
 import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
 import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
 import com.example.gestion_inventario.viewmodel.AuthViewModel
@@ -42,6 +44,14 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 
 		composable(route = Routes.Login.ruta) {
 			LoginScreen(navController, authViewModel)
+		}
+
+		composable(route = Routes.AgregarProducto.ruta) {
+			AgregarProductoScreen(navController, authViewModel)
+		}
+
+		composable(route = Routes.RegistrarUsuario.ruta) {
+			RegistroUsuarioScreen(navController, authViewModel)
 		}
 	}
 

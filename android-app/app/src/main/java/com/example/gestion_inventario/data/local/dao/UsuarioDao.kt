@@ -13,7 +13,7 @@ interface UsuarioDao {
 	// Upsert -> Update + Insert:
 	// Si el id que se intenta insertar existe, se aplica Update. Si no existe, se aplica Insert.
 	@Upsert
-	suspend fun upsertUsuario(usuario: UsuarioEntity)
+	suspend fun upsertUsuario(usuario: UsuarioEntity): Long
 
 	@Delete
 	suspend fun deleteUsuario(usuario: UsuarioEntity)
