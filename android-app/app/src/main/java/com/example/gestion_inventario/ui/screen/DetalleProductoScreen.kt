@@ -1,5 +1,9 @@
 package com.example.gestion_inventario.ui.screen
 
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
@@ -17,7 +22,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -39,6 +48,11 @@ fun DetalleProductoScreen(
     navController: NavController,
     productoId: Long
 ) {
+
+    var photoUriString by rememberSaveable { mutableStateOf<String?>(null) }
+    var pendingCaptureUri by remember { mutableStateOf<Uri?>(null) }
+    var showDialog by remember { mutableStateOf(false) }
+
     val context = androidx.compose.ui.platform.LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val usuarioRepo = UsuarioRepository(db.usuarioDao())
@@ -63,6 +77,18 @@ fun DetalleProductoScreen(
         viewModel.cargarProductoPorId(productoId)
     }
 
+    val takePictureLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { success ->
+        if (success) {
+            photoUriString = pendingCaptureUri?.toString()
+            Toast.makeText(context, "Foto tomada correctamente", Toast.LENGTH_SHORT).show()
+        } else {
+            pendingCaptureUri = null
+            Toast.makeText(context, "No se tomó ninguna foto", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     MainDrawer(navController, drawerState, scope) {
         Scaffold(
             //topBar = { MainTopBar(navController, drawerState, scope) }
@@ -73,7 +99,27 @@ fun DetalleProductoScreen(
                     .padding(innerPadding)
                     .padding(24.dp)
                     .fillMaxSize()
+
+
             ) {
+
+                Button(onClick = {
+                    val file = createTempImageFile(context)
+                    val uri = getImageUriForFile(context, file)
+                    pendingCaptureUri = uri
+                    takePictureLauncher.launch(uri)
+                }) {
+                    Text(if (photoUriString.isNullOrEmpty()) "Tomar Foto" else "Volver a Tomar Foto")
+                }
+
+                // Boton para eliminar foto
+                if (!photoUriString.isNullOrEmpty()) {
+                    OutlinedButton(onClick = { showDialog = true }) {
+                        Text("Eliminar Foto")
+                    }
+                }
+
+
                 producto?.let { producto ->
 
 
