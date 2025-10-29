@@ -3,10 +3,12 @@ package com.example.gestion_inventario.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 import com.example.gestion_inventario.data.local.entity.ProductoEntity
+import com.example.gestion_inventario.data.local.entity.UsuarioEntity
 
 @Dao
 interface ProductoDao {
@@ -28,4 +30,11 @@ interface ProductoDao {
     // Se obtiene la cantidad total de productos
     @Query("SELECT COUNT(*) FROM producto")
     suspend fun contarProductos(): Int
+
+    @Query("SELECT * FROM producto WHERE id = :id")
+    suspend fun obtenerProductoPorId(id: Long): ProductoEntity?
+
+    @Update
+    suspend fun actualizarProducto(producto: ProductoEntity)
+
 }
