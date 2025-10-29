@@ -418,6 +418,47 @@ class AuthViewModel(
 	}
 
 
+	// Lista de usuarios registrados
+
+	private val _usuarios = MutableStateFlow<List<UsuarioEntity>>(emptyList())
+	val usuarios: StateFlow<List<UsuarioEntity>> = _usuarios
+
+
+	// Cargar los usuarios desde el repositorio
+	fun cargarUsuarios() {
+		viewModelScope.launch {
+			usuarioRepository.obtenerUsuarios().collect { lista ->
+				_usuarios.value = lista
+			}
+		}
+	}
+
+	private val _usuarioSeleccionado = MutableStateFlow<UsuarioEntity?>(null)
+	val usuarioSeleccionado: StateFlow<UsuarioEntity?> = _usuarioSeleccionado
+
+	fun cargarUsuarioPorId(id: Long) {
+		viewModelScope.launch {
+			_usuarioSeleccionado.value = usuarioRepository.obtenerUsuarioPorId(id)
+		}
+	}
+
+	fun eliminarUsuario(id: Long) {
+		viewModelScope.launch {
+			usuarioRepository.eliminarUsuario(id)
+		}
+	}
+
+
+	fun actualizarUsuario(usuario: UsuarioEntity, onSuccess: () -> Unit) {
+		viewModelScope.launch {
+			usuarioRepository.actualizarUsuario(usuario)
+			onSuccess()
+		}
+	}
+
+
+
+
 
 
 	fun canSubmitRegistrarUsua():Boolean {

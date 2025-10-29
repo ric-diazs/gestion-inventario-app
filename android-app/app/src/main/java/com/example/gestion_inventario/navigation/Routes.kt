@@ -12,4 +12,6 @@ sealed class Routes(val ruta: String) {
 	data object RegistrarUsuario : Routes(ruta ="registrarUsuario")
 
 	data object PerfilUsuario : Routes(ruta ="perfilUsuario")
+
+	data object  DetalleUsuario : Routes(ruta = "detalleUsuario")
 }
