@@ -10,4 +10,6 @@ sealed class Routes(val ruta: String) {
 	data object AgregarProducto : Routes(ruta ="agregarProducto")
 
 	data object RegistrarUsuario : Routes(ruta ="registrarUsuario")
+
+	data object PerfilUsuario : Routes(ruta ="perfilUsuario")
 }

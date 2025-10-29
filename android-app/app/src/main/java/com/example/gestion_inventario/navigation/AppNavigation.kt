@@ -12,6 +12,7 @@ import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
 import com.example.gestion_inventario.ui.screen.RegistroUsuarioScreen
 import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
 import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
+import com.example.gestion_inventario.ui.screen.PerfilUsuarioScreen
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 
 @Composable
@@ -52,6 +53,10 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 
 		composable(route = Routes.RegistrarUsuario.ruta) {
 			RegistroUsuarioScreen(navController, authViewModel)
+		}
+
+		composable(route = Routes.PerfilUsuario.ruta) {
+			PerfilUsuarioScreen(navController, authViewModel)
 		}
 	}
 

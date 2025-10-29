@@ -39,7 +39,7 @@ fun MainDrawer(
                     label = { Text(text = "Perfil") },
                     selected = false,
                     onClick = {
-                        navController.navigate(Routes.ProductosAdmin.ruta)
+                        navController.navigate(Routes.PerfilUsuario.ruta)
                         scope.launch { drawerState.close() }
                     },
                     icon = {Icon(imageVector = Icons.Filled.Person, contentDescription = "Icono de perfil de usuario")}

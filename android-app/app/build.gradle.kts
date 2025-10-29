@@ -51,6 +51,8 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.compose.material3:material3:1.4.0") // Para poder usar clase 'ExposedDropdownMenuAnchorType'
     implementation("androidx.compose.material:material-icons-core") // Por actualizacion de version de material3
+    implementation("io.coil-kt:coil-compose:2.7.0") // Para manipular carga de imagenes en cache temporal
+    implementation("androidx.datastore:datastore-preferences:1.1.1") // Data Storage
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
