@@ -2,12 +2,15 @@ package com.example.gestion_inventario.data.repository
 
 import com.example.gestion_inventario.data.local.dao.UsuarioDao
 import com.example.gestion_inventario.data.local.entity.UsuarioEntity
+import kotlinx.coroutines.flow.Flow
 
 // Implementacion de logica de negocio mediante el uso de las funciones definidas en interfaz del DAO
 class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 	// Validacion de credenciales correctas para login
 	// 'Result' es una clase de la biblioteca standard de Kotlin usada, entre otras cosas,
 	// para el manejo de errores: https://www.baeldung.com/kotlin/result-class
+
+
 	suspend fun validarLogin(email: String, password: String): Result<UsuarioEntity> {
 		// La funcion debe ser asincronica porque obtenerUsuarioPorEmail() tambien lo es
 		val usuario = usuarioDao.obtenerUsuarioPorEmail(email)
@@ -47,9 +50,29 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 
 		return Result.success(id)
 	}
+	fun obtenerUsuarios(): Flow<List<UsuarioEntity>> = usuarioDao.obtenerUsuarios()
+
+	suspend fun obtenerUsuarioPorId(id: Long): UsuarioEntity? {
+		return usuarioDao.obtenerUsuarioPorId(id)
+	}
+
+	suspend fun eliminarUsuario(id: Long) {
+		val usuario = usuarioDao.obtenerUsuarioPorId(id)
+		if (usuario != null) {
+			usuarioDao.deleteUsuario(usuario)
+		}
+	}
 
 
 
+	suspend fun actualizarUsuario(usuario: UsuarioEntity) {
+		usuarioDao.upsertUsuario(usuario)
+	}
 
 
 }
+
+
+
+
+

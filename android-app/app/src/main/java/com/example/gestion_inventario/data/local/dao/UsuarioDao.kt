@@ -3,6 +3,7 @@ package com.example.gestion_inventario.data.local.dao
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Update
 import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
@@ -32,4 +33,15 @@ interface UsuarioDao {
 	// Se obtiene la cantidad total de usuarios
 	@Query("SELECT COUNT(*) FROM usuario")
 	suspend fun contarUsuarios(): Int
+
+	@Query("SELECT * FROM usuario WHERE id = :id")
+	suspend fun obtenerUsuarioPorId(id: Long): UsuarioEntity?
+
+	@Update
+	suspend fun actualizarUsuario(usuario: UsuarioEntity)
+
+
+
+
+
 }

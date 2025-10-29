@@ -40,5 +40,6 @@ private fun getDestino(ruta: Routes): String {
     	is Routes.ReportarProblema -> Routes.ReportarProblema.ruta
     	is Routes.AgregarProducto -> Routes.AgregarProducto.ruta
     	is Routes.RegistrarUsuario -> Routes.RegistrarUsuario.ruta
+		is Routes.DetalleUsuario  -> Routes.DetalleUsuario.ruta
     }
 } 
