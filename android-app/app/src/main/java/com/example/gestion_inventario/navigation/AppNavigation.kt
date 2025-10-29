@@ -25,7 +25,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		startDestination = Routes.Login.ruta
 	) {
 		composable(route = Routes.HomeAdmin.ruta) {
-			AdminHomeScreen(navController)
+			AdminHomeScreen(navController, authViewModel)
 		}
 
 		composable(route = Routes.ProductosAdmin.ruta) {
