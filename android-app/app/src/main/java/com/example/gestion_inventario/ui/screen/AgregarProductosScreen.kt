@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
+import com.example.gestion_inventario.navigation.Routes
+import com.example.gestion_inventario.ui.components.SecundaryTopBar
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 
 @Composable
@@ -31,7 +33,7 @@ fun AgregarProductoScreen(
     val estadoAgregarProducto by viewModel.registrarProducto.collectAsState()
 
     Scaffold(
-        topBar = {},
+        topBar = {SecundaryTopBar(Routes.ProductosAdmin, navController)},
         modifier = Modifier.fillMaxSize()
     ){ innerPadding ->
         Column(

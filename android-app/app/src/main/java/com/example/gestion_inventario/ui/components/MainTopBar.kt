@@ -2,9 +2,11 @@ package com.example.gestion_inventario.ui.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DrawerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,6 +19,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.R
 import com.example.gestion_inventario.navigation.Routes
@@ -24,11 +28,10 @@ import com.example.gestion_inventario.navigation.Routes
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
-	navController: NavController
+	navController: NavController,
+    drawerState: DrawerState,
+    scope: CoroutineScope
 ) {
-	// Agregar aca Drawer (sidebar)
-	
-
 	// Barra de navegacion (topbar): Es un TopBar centrado
 	CenterAlignedTopAppBar(
         title = {
@@ -38,6 +41,12 @@ fun MainTopBar(
                 maxLines = 1, // El texto sera solo de una linea
                 overflow = TextOverflow.Ellipsis // Si el texto no cabe completamente, se agrega una elipsis (i.e, un '...')
             )
+        },
+        // Agregar accion para abrir el Menu Drawer
+        navigationIcon = {
+            IconButton(onClick = {scope.launch { drawerState.open() }}) {
+                Icon(imageVector = Icons.Filled.Menu, contentDescription = "Icono de menu hamburguesa")
+            }
         },
         actions = {
             IconButton(onClick = {navController.navigate(route = Routes.HomeAdmin.ruta)}) {
