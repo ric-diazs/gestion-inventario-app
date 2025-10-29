@@ -192,7 +192,7 @@ fun PerfilUsuarioScreen(
 }
 
 // Funciones para crear foto como temporal y para obtener la URI que lleva a donde esta la foto de perfil
-private fun createTempImageFile(context: Context): File {
+fun createTempImageFile(context: Context): File {
     val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
     val storageDir = File(context.cacheDir, "images").apply {
         if (!exists()) mkdirs()
@@ -200,7 +200,7 @@ private fun createTempImageFile(context: Context): File {
     return File(storageDir, "IMG_${timeStamp}.jpg")
 }
 
-private fun getImageUriForFile(context: Context, file: File): Uri {
+fun getImageUriForFile(context: Context, file: File): Uri {
     val authority = "${context.packageName}.fileprovider"
     return FileProvider.getUriForFile(context, authority, file)
 }
