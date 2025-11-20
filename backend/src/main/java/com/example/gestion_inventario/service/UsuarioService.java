@@ -37,23 +37,4 @@ public class UsuarioService {
     public void eliminarUsuario(Integer id) {
         usuarioRepository.deleteById(id);
     }
-
-
-    /* OTRAS FUNCIONES */
-    // Define el nombre de usuario
-    public String definirNombreUsuario(String nombre, String apellidos) {
-        // Toma las 3 primeras letras del nombre
-        String substrNombre = nombre.toLowerCase().substring(1, 4);
-
-        // Las dos primeras del apellido
-        String substrApellido = apellidos.toLowerCase().substring(1, 3);
-
-        return substrNombre + "." + substrApellido;
-    }
-
-    // Define correo: Es el nombre de usuario + '@gestion.com'
-    public String definirCorreo(String nombreUsuario) {
-        return nombreUsuario + "@gestion.com";
-    }
-
 }

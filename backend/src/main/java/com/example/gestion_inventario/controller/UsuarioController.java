@@ -47,12 +47,6 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<Usuario> crearUsuario(@RequestBody Usuario usuario) {
-
-        String nombreUsuario = usuarioService.definirNombreUsuario(usuario.getNombre(), usuario.getApellidos());
-
-        usuario.setNombreUsuario(nombreUsuario);
-        usuario.setCorreo(usuarioService.definirCorreo(usuario.getNombreUsuario()));
-
         Usuario nuevoUsuario = usuarioService.guardarUsuario(usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoUsuario);
     }
@@ -65,12 +59,8 @@ public class UsuarioController {
             usuarioActualizar.setId(id);
             usuarioActualizar.setNombre(usuario.getNombre());
             usuarioActualizar.setApellidos(usuario.getApellidos());
-
-            String nombreUsuario = usuarioService.definirNombreUsuario(usuario.getNombre(), usuario.getApellidos());
-
-            usuarioActualizar.setNombreUsuario(nombreUsuario);
-            usuarioActualizar.setCorreo(usuarioService.definirCorreo(usuarioActualizar.getNombreUsuario()));
-
+            usuarioActualizar.setCorreo(usuario.getCorreo());
+            usuarioActualizar.setPassword(usuario.getPassword());
             usuarioActualizar.setTipoUsuario(usuario.getTipoUsuario());
 
             usuarioService.guardarUsuario(usuarioActualizar);

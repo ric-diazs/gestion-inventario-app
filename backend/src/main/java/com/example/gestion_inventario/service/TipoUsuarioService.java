@@ -16,8 +16,6 @@ public class TipoUsuarioService {
     @Autowired
     private TipoUsuarioRepository tipoUsuarioRepository;
 
-    // Regla de negocio:
-    // Se enviaran al endpoint solo metodos para mostrar los tipos de usuarios
     public List<TipoUsuario> obtenerTiposUsuario() {
         return tipoUsuarioRepository.findAll();
     }
@@ -25,5 +23,12 @@ public class TipoUsuarioService {
     public TipoUsuario obtenerUnTipoUsuario(Integer id) {
         return tipoUsuarioRepository.findById(id).get();
     }
+    
+    public TipoUsuario guardarTipoUsuario(TipoUsuario tipoUsuario) {
+        return tipoUsuarioRepository.save(tipoUsuario);
+    }
 
+    public void eliminarTipoUsuario(Integer id) {
+        tipoUsuarioRepository.deleteById(id);
+    }
 }
