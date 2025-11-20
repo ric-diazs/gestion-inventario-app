@@ -60,6 +60,7 @@ public class ReporteProblemaController {
             reporteProblemaActualizar.setDescripcion(reporteProblema.getDescripcion());
             reporteProblemaActualizar.setTipoProblema(reporteProblema.getTipoProblema());
             reporteProblemaActualizar.setUsuario(reporteProblema.getUsuario());
+            reporteProblemaActualizar.setNivelPrioridad(reporteProblema.getNivelPrioridad());
 
             reporteProblemaService.guardarReporteProblema(reporteProblemaActualizar);
 
