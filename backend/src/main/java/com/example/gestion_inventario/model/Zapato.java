@@ -1,10 +1,24 @@
 package com.example.gestion_inventario.model;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 @Entity
+@Table(name = "zapato")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,15 +31,17 @@ public class Zapato {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false, length = 600)
+    @Column(nullable = false)
     private String descripcion;
 
     @ManyToOne
-    @JoinColumn(name = "id_talla", nullable = false)
+    @JsonBackReference(value = "ref-zapato-talla")
+    @JoinColumn(name = "id_talla", nullable = false, foreignKey = @ForeignKey(name = "fk_talla"))
     private Talla talla;
 
     @ManyToOne
-    @JoinColumn(name = "id_color", nullable = false)
+    @JsonBackReference(value = "ref-zapato-color")
+    @JoinColumn(name = "id_color", nullable = false, foreignKey = @ForeignKey(name = "fk_color"))
     private Color color;
 
     @Column(nullable = false)
@@ -35,8 +51,5 @@ public class Zapato {
     private Integer cantidad;
 
     @Column(nullable = false)
-    private LocalDate fechaRegistro;
-
-    @Column(length = 255)
-    private String rutaImagen;
+    private LocalDate fechaRegistro = LocalDate.now();
 }

@@ -1,33 +1,34 @@
 package com.example.gestion_inventario.service;
 
-import com.example.gestion_inventario.model.Zapato;
-import com.example.gestion_inventario.repository.ZapatoRepository;
-import org.springframework.stereotype.Service;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.example.gestion_inventario.model.Zapato;
+import com.example.gestion_inventario.repository.ZapatoRepository;
+
 @Service
+@Transactional
 public class ZapatoService {
+    @Autowired
+    private ZapatoRepository zapatoRepository;
 
-    private final ZapatoRepository zapatoRepository;
-
-    public ZapatoService(ZapatoRepository zapatoRepository) {
-        this.zapatoRepository = zapatoRepository;
-    }
-
-    public List<Zapato> listar() {
+    public List<Zapato> listarZapatos() {
         return zapatoRepository.findAll();
     }
 
-    public Zapato guardar(Zapato zapato) {
+    public Zapato guardarZapato(Zapato zapato) {
         return zapatoRepository.save(zapato);
     }
 
-    public Zapato buscarPorId(Integer id) {
-        return zapatoRepository.findById(id).orElse(null);
+    public Zapato buscarZapatoPorId(Integer id) {
+        return zapatoRepository.findById(id).get();
     }
 
-    public void eliminar(Integer id) {
+    public void eliminarZapato(Integer id) {
         zapatoRepository.deleteById(id);
     }
 }
