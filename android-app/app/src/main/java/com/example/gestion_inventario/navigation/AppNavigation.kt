@@ -39,7 +39,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		}
 
 		composable(route = Routes.ProductosAdmin.ruta) {
-			ProductosAdminScreen(navController)
+			ProductosAdminScreen(navController, authViewModel)
 		}
 
 		composable(route = Routes.UsuariosAdmin.ruta) {
@@ -84,18 +84,23 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		
 		composable(
 			route = "detalleProducto/{productoId}",
-			arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+			arguments = listOf(navArgument("productoId") { type = NavType.IntType })
+			//arguments = listOf(navArgument("productoId") { type = NavType.LongType })
 		) { backStackEntry ->
-			val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
-			DetalleProductoScreen(navController, productoId)
+			//val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
+			val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
+			DetalleProductoScreen(navController, productoId, authViewModel)
 		}
 
 		composable(
 			route = "editarProducto/{productoId}",
-			arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+			//arguments = listOf(navArgument("productoId") { type = NavType.LongType })
+			arguments = listOf(navArgument("productoId") { type = NavType.IntType })
 		) { backStackEntry ->
-			val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
-			EditarProductoScreen(navController, productoId)
+			//val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
+			val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
+			EditarProductoScreen(navController, productoId, authViewModel)
+			//EditarProductoScreen(navController, productoId)
 		}
 
 	}

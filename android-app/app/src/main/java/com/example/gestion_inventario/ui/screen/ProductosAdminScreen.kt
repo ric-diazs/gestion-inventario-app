@@ -43,27 +43,31 @@ import com.example.gestion_inventario.navigation.Routes
 import com.example.gestion_inventario.ui.components.MainDrawer
 import com.example.gestion_inventario.ui.components.MainTopBar
 import com.example.gestion_inventario.viewmodel.AuthViewModel
-import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+//import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
 
 
 @Composable
 fun ProductosAdminScreen(
-	navController: NavController
+	navController: NavController,
+	viewModel: AuthViewModel
 ) {
 
-	val context = LocalContext.current
+	/*val context = LocalContext.current
 	val db = AppDatabase.getDatabase(context)
 	val usuarioRepo = UsuarioRepository(db.usuarioDao())
 	val productoRepo = ProductoRepository(db.productoDao())
 
 	val factory = AuthViewModelFactory(usuarioRepo, productoRepo)
-	val viewModel: AuthViewModel = viewModel(factory = factory)
+	val viewModel: AuthViewModel = viewModel(factory = factory)*/
 
 
 	val productos by viewModel.productos.collectAsState()
 
+	val productosAPI by viewModel.productosAPI.collectAsState()
+
 	LaunchedEffect(Unit) {
-		viewModel.cargarProductos()
+		//viewModel.cargarProductos()
+		viewModel.cargarProductosApi()
 	}
 
 
@@ -109,7 +113,8 @@ fun ProductosAdminScreen(
 				Spacer(modifier = Modifier.height(16.dp))
 
 				// Mostrar lista o mensaje vacío
-				if (productos.isEmpty()) {
+				//if (productos.isEmpty()) {
+				if(productosAPI.isEmpty()) {
 					Text(
 						text = "No hay productos registrados",
 						style = MaterialTheme.typography.bodyLarge,
@@ -122,7 +127,30 @@ fun ProductosAdminScreen(
 							.fillMaxWidth()
 							.padding(horizontal = 16.dp)
 					) {
-						items(productos) { producto ->
+						items(productosAPI) { productoAPI ->
+							val color = viewModel.obtenerColorDeProducto(productoAPI.id)
+							val talla = viewModel.obtenerTallaDeProducto(productoAPI.id)
+
+							Card(
+								modifier = Modifier
+									.fillMaxWidth()
+									.padding(vertical = 8.dp)
+									.clickable{
+										navController.navigate("detalleProducto/${productoAPI.id}")
+									},
+								elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+							){
+								Column(modifier = Modifier.padding(16.dp)){
+									Text(text = "${productoAPI.nombre}", fontWeight = FontWeight.Bold)
+									Text(text = "${productoAPI.descripcion}")
+									Text(text = "Talla: ${talla?.talla ?: "Desconocida"}")
+									Text(text = "Color: ${color?.color ?: "Desconocido"}")
+									Text(text = "Precio: $${productoAPI.precio}")
+									Text(text = "Cantidad: ${productoAPI.cantidad}")
+								}
+							}
+						}
+						/*items(productos) { producto ->
 							Card(
 								modifier = Modifier
 									.fillMaxWidth()
@@ -144,7 +172,7 @@ fun ProductosAdminScreen(
 									Text(text = producto.cantidad)
 								}
 							}
-						}
+						}*/
 					}
 				}
     		}

@@ -10,6 +10,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.data.local.entity.UsuarioEntity
+import com.example.gestion_inventario.data.remote.model.ColorAPI
+import com.example.gestion_inventario.data.remote.model.IdObject
+import com.example.gestion_inventario.data.remote.model.ProductoAPI
+import com.example.gestion_inventario.data.remote.model.ProductoSolicitud
+import com.example.gestion_inventario.data.remote.model.TallaAPI
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.model.AgregarProductoUiState
@@ -42,6 +47,18 @@ class AuthViewModel(
 
 	private val _registrarUsuario = MutableStateFlow(value = RegistroUsuarioUiState())
 
+	private val _colores = MutableStateFlow<List<ColorAPI>>(emptyList())
+
+	private val _idObject = MutableStateFlow<IdObject?>(null)
+
+    private val _tallas = MutableStateFlow<List<TallaAPI>>(emptyList())
+
+    private val _productosAPI = MutableStateFlow<List<ProductoAPI>>(emptyList())
+
+    private val _productoAPI = MutableStateFlow<ProductoAPI?>(null)
+
+    private val _productoSolicitudAPI = MutableStateFlow<ProductoSolicitud?>(null)
+
 	// Esta variable publica es la que se usara para acceder al estado del login desde fuera
 	// de la clase AuthViewModel. Tambien es un StateFlow de tipo LoginUiState, pero no es mutable.
 	val login: StateFlow<LoginUiState> = _login
@@ -56,6 +73,29 @@ class AuthViewModel(
 	val registrarProducto: StateFlow<AgregarProductoUiState> = _registrarProducto
 
 	val registrarUsuario: StateFlow<RegistroUsuarioUiState> = _registrarUsuario
+
+	val colores : StateFlow<List<ColorAPI>> = _colores
+
+	val idObject : StateFlow<IdObject?> = _idObject
+
+	val tallas : StateFlow<List<TallaAPI>> = _tallas
+
+    val productosAPI: StateFlow<List<ProductoAPI>> = _productosAPI
+
+    val productoAPI: StateFlow<ProductoAPI?> = _productoAPI
+
+    val productoSolicitudAPI: StateFlow<ProductoSolicitud?> = _productoSolicitudAPI
+
+	/*
+	=====================================
+	Llamado automatico de funciones a API
+	=====================================
+	*/
+	init {
+		cargarColoresApi()
+		cargarTallasApi()
+		cargarProductosApi()
+	}
 
 
 	/*==== Funciones para validar login. ====*/
@@ -218,10 +258,13 @@ class AuthViewModel(
 		if (estaVacio(precio)) return "El precio es obligatorio"
 
 		// Solo números con puntos cada tres dígitos, ej: 10.000 o 1.000.000
-		val regex = Regex("^[0-9]{1,3}(\\.[0-9]{3})*$")
+		//val regex = Regex("^[0-9]{1,3}(\\.[0-9]{3})*$")
+		// Solo números enteros positivos
+		val regex = Regex("^[0-9]+$") 
 
 		return if (!regex.matches(precio)) {
-			"El precio debe tener el formato 10.000 (solo puntos como separadores de miles)"
+			//"El precio debe tener el formato 10.000 (solo puntos como separadores de miles)"
+			"El precio solo puede contener números enteros"
 		} else null
 	}
 
@@ -237,10 +280,10 @@ class AuthViewModel(
 
 
 
-	fun onCodigoChange(valorCodigo: String) {
+	/*fun onCodigoChange(valorCodigo: String) {
 		//val filtered = value.filter { it.isLetter() || it.isWhitespace() }
 		_registrarProducto.update { it.copy(codigo = valorCodigo, errorCodigo = validarCodigo(valorCodigo)) }
-	}
+	}*/
 
 	fun onNombreProductoChange(valorNombreProd: String) {
 		//val filtered = value.filter { it.isLetter() || it.isWhitespace() }
@@ -266,6 +309,16 @@ class AuthViewModel(
 	fun onCantidadChange(valorCantidad: String) {
 		_registrarProducto.update { it.copy(cantidad = valorCantidad, errorCantidad = validarCantidad(valorCantidad)) }
 	}
+
+	// Funcion para actualizar el estado del color (en campo dropdown)
+	fun actualizarColor(valorColor: String, valorIdColor: Int) {
+		_registrarProducto.update { it.copy(color = valorColor, idColor = valorIdColor, errorColor = null) }
+	}
+
+    // Funcion para actualizar el estado del color (en campo dropdown)
+    fun actualizarTalla(valorTalla: String, valorIdTalla: Int) {
+        _registrarProducto.update { it.copy(talla = valorTalla, idTalla = valorIdTalla, errorTalla = null) }
+    }
 
 	// Funcion para limpiar campos de registro de productos
 	fun limpiarCamposRegistroProd() {
@@ -315,7 +368,7 @@ class AuthViewModel(
 	fun canSubmitRegistrarProd():Boolean {
 		val estadoRegistrarProd = _registrarProducto.value
 
-		val errorCodigoUpdated = validarCodigo(estadoRegistrarProd.codigo)
+		//val errorCodigoUpdated = validarCodigo(estadoRegistrarProd.codigo)
 		val errorNombreProductoUpdated = validarNombreProducto(estadoRegistrarProd.nombreProducto)
 		val errorDescripcionUpdated = validarDescripcion(estadoRegistrarProd.descripcion)
 		val errorTallaUpdated = validarTalla(estadoRegistrarProd.talla)
@@ -325,7 +378,7 @@ class AuthViewModel(
 
 		_registrarProducto.update{
 			it.copy(
-				errorCodigo = errorCodigoUpdated,
+				//errorCodigo = errorCodigoUpdated,
 				errorNombreProducto = errorNombreProductoUpdated,
 				errorDescripcion = errorDescripcionUpdated,
 				errorTalla = errorTallaUpdated,
@@ -336,7 +389,7 @@ class AuthViewModel(
 		}
 
 		if(
-			errorCodigoUpdated != null ||
+			//errorCodigoUpdated != null ||
 			errorNombreProductoUpdated != null ||
 			errorDescripcionUpdated != null ||
 			errorTallaUpdated != null ||
@@ -351,7 +404,7 @@ class AuthViewModel(
 	}
 
 	// Funcion para registrar producto
-	fun submitRegistroProducto() {
+	/*fun submitRegistroProducto() {
 		val estadoRegistrarProd = _registrarProducto.value
 
 		// Se lanza corrutina por funcion de registro de Repository (es asincrona)
@@ -366,10 +419,104 @@ class AuthViewModel(
 				cantidad = estadoRegistrarProd.cantidad
 			)
 		}
+	}*/
+
+
+	/*
+	=======================================================
+	           Retrofit Productos en ViewModel
+	=======================================================
+	*/
+	// Colores del producto
+	fun cargarColoresApi() {
+		viewModelScope.launch {
+			try {
+				_colores.value = productoRepository.obtenerColoresAPI()
+			} catch(e: Exception) {
+				println("Error al obtener colores: ${e.localizedMessage}")
+			}
+		}
 	}
 
-	//Funciones para validar los campos de productos que no deben estar vacios
+    // Tallas del producto
+    fun cargarTallasApi() {
+        viewModelScope.launch {
+            try {
+                _tallas.value = productoRepository.obtenerTallasAPI()
+            } catch(e: Exception) {
+                println("Error al obtener tallas: ${e.localizedMessage}")
+            }
+        }
+    }
 
+    // Listado de productos
+    fun cargarProductosApi() {
+        viewModelScope.launch {
+            try {
+                _productosAPI.value = productoRepository.obtenerProductosAPI()
+            } catch(e: Exception) {
+                println("Error al obtener productos: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    // Listado de productos
+    fun cargarProductoApiPorId(id: Int) {
+        viewModelScope.launch {
+            try {
+                _productoAPI.value = productoRepository.obtenerProductoAPIPorId(id)
+            } catch(e: Exception) {
+                println("Error al obtener el producto de id ${id}: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    // Funcion para registrar producto en API (Metodo POST).
+	fun submitRegistroProductoAPI() {
+		val estadoRegistroProdApi = _registrarProducto.value
+
+		viewModelScope.launch {
+			productoRepository.registrarProductoAPI(
+				nombre = estadoRegistroProdApi.nombreProducto,
+        		descripcion = estadoRegistroProdApi.descripcion,
+        		idTalla = estadoRegistroProdApi.idTalla!!,
+        		idColor = estadoRegistroProdApi.idColor!!,
+        		precio = estadoRegistroProdApi.precio.replace(".", "").toInt(),
+        		cantidad = estadoRegistroProdApi.cantidad.toInt()
+			)
+		}
+	}
+
+	// Funcion para actualizar producto (Metodo PUT)
+	fun submitActualizarProductoAPI(id: Int, productoActualizar : ProductoSolicitud) {
+		viewModelScope.launch {
+			productoRepository.actualizarProductoAPI(id, productoActualizar)
+		}
+	}
+
+	// Funcion para eliminar productos (Metodo DELETE)
+	fun submitEliminarProductoAPI(id: Int) {
+		viewModelScope.launch {
+			productoRepository.eliminarProductoAPI(id)
+		}
+	}
+
+	// Funciones para obtener el color y la talla de un producto
+	fun obtenerColorDeProducto(productoId: Int): ColorAPI? {
+    	return colores.value.firstOrNull { colorApi ->
+    	    colorApi.zapatos.any { it.id == productoId }
+    	}
+	}
+
+	fun obtenerTallaDeProducto(productoId: Int): TallaAPI? {
+	    return tallas.value.firstOrNull { tallaApi ->
+	        tallaApi.zapatos.any { it.id == productoId }
+	    }
+	}
+
+
+
+	//Funciones para validar los campos de productos que no deben estar vacios
 	fun validarNombre(nombre: String): String?{
 		if(nombre.isBlank()) return "El nombre es obligatorio"
 		val regex = Regex("^[A-Za-zÁÉÍÓÚÑáéíóúñ ]+$")

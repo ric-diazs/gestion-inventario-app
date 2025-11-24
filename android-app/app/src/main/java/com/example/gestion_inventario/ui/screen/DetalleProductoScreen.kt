@@ -39,14 +39,16 @@ import com.example.gestion_inventario.ui.components.MainDrawer
 //import com.example.gestion_inventario.ui.components.MainTopBar
 import com.example.gestion_inventario.ui.components.SecundaryTopBar
 import com.example.gestion_inventario.viewmodel.AuthViewModel
-import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+//import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
 import com.example.gestion_inventario.navigation.Routes
 import kotlinx.coroutines.launch
 
 @Composable
 fun DetalleProductoScreen(
     navController: NavController,
-    productoId: Long
+    productoId: Int,
+    viewModel: AuthViewModel
+    //productoId: Long
 ) {
 
     var photoUriString by rememberSaveable { mutableStateOf<String?>(null) }
@@ -54,12 +56,12 @@ fun DetalleProductoScreen(
     var showDialog by remember { mutableStateOf(false) }
 
     val context = androidx.compose.ui.platform.LocalContext.current
-    val db = AppDatabase.getDatabase(context)
+    /*val db = AppDatabase.getDatabase(context)
     val usuarioRepo = UsuarioRepository(db.usuarioDao())
     val productoRepo = ProductoRepository(db.productoDao())
 
     val factory = AuthViewModelFactory(usuarioRepo, productoRepo)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
+    val viewModel: AuthViewModel = viewModel(factory = factory)*/
 
     val producto by viewModel.productoSeleccionado.collectAsState()
 
@@ -67,14 +69,18 @@ fun DetalleProductoScreen(
     val scope = rememberCoroutineScope()
 
     // Se accede al valor actual del estado del usuario logueado exitosamente a traves del ViewModel
-    val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
+    //val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
 
     // Se accede al tipo de usuario logueado para hacer restricciones a vistas si no es 'Admin'
-    val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
+    //val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
+
+    // Gestion de estado del viewmodel de un producto
+    val productoAPI by viewModel.productoAPI.collectAsState()
 
     // Cargar usuario al entrar
     LaunchedEffect(productoId) {
-        viewModel.cargarProductoPorId(productoId)
+        //viewModel.cargarProductoPorId(productoId)
+        viewModel.cargarProductoApiPorId(productoId)
     }
 
     val takePictureLauncher = rememberLauncherForActivityResult(
@@ -120,28 +126,32 @@ fun DetalleProductoScreen(
                 }
 
 
-                producto?.let { producto ->
-
+                //producto?.let { producto ->
+                productoAPI?.let { producto ->
+                    val color = viewModel.obtenerColorDeProducto(producto.id)
+                    val talla = viewModel.obtenerTallaDeProducto(producto.id)
 
                     Text(
-                        text = "${producto.codigo} ${producto.nombreProducto}",
+                        //text = "${producto.codigo} ${producto.nombreProducto}",
+                        text = "${producto.nombre}",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
                     Text(text = "Descripcion: ${producto.descripcion}")
-                    Text(text = "Talla: ${producto.talla}")
-                    Text(text = "Color: ${producto.color}")
+                    Text(text = "Talla: ${talla?.talla ?: "Desconocida"}")
+                    Text(text = "Color: ${color?.color ?: "Desconocido"}")
                     Text(text = "Precio: ${producto.precio}")
                     Text(text = "Cantidad: ${producto.cantidad}")
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // Se restringe a que solo un usuario de tipo "Admin" pueda editar o eliminar productos
-                    if(tipoUsuario == "Admin"){
+                    //if(tipoUsuario == "Admin"){
                         // 🔹 Botón para editar
                         Button(
                             onClick = {
-                                navController.navigate("editarProducto/${producto.id}")
+                                //navController.navigate("editarProducto/${producto.id}")
+                                navController.navigate("editarProducto/${productoId}")
                             },
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -153,10 +163,12 @@ fun DetalleProductoScreen(
                         // 🔹 Botón para eliminar
                         Button(
                             onClick = {
-                                scope.launch {
+                                viewModel.submitEliminarProductoAPI(productoId)
+                                navController.popBackStack()
+                                /*scope.launch {
                                     viewModel.eliminarProducto(producto.id)
                                     navController.popBackStack()
-                                }
+                                }*/
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.error
@@ -165,7 +177,7 @@ fun DetalleProductoScreen(
                         ) {
                             Text(text = "Eliminar Producto")
                         }
-                    }
+                    //}
                 } ?: Text(text = "Cargando producto...")
             }
         }
