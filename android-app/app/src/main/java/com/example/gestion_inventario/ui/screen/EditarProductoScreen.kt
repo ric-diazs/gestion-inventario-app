@@ -13,15 +13,16 @@ import com.example.gestion_inventario.data.remote.model.IdObject
 import com.example.gestion_inventario.data.remote.model.ProductoSolicitud
 import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.data.repository.UsuarioRepository
-import com.example.gestion_inventario.viewmodel.AuthViewModel
+//import com.example.gestion_inventario.viewmodel.AuthViewModel
 //import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarProductoScreen(
     navController: NavController,
     productoId: Int,
-    viewModel: AuthViewModel
+    viewModel: ProductoViewModel
     //productoId: Long
 ) {
     /*val context = LocalContext.current

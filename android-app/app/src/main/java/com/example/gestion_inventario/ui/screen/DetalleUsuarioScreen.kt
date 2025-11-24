@@ -27,9 +27,8 @@ fun DetalleUsuarioScreen(
     val context = androidx.compose.ui.platform.LocalContext.current
     val db = AppDatabase.getDatabase(context)
     val usuarioRepo = UsuarioRepository(db.usuarioDao())
-    val productoRepo = ProductoRepository(db.productoDao())
 
-    val factory = AuthViewModelFactory(usuarioRepo, productoRepo)
+    val factory = AuthViewModelFactory(usuarioRepo)
     val viewModel: AuthViewModel = viewModel(factory = factory)
 
     val usuario by viewModel.usuarioSeleccionado.collectAsState()
@@ -44,7 +43,6 @@ fun DetalleUsuarioScreen(
 
     MainDrawer(navController, drawerState, scope) {
         Scaffold(
-            //topBar = { MainTopBar(navController, drawerState, scope) }
             topBar = {SecundaryTopBar(Routes.UsuariosAdmin, navController)}
         ) { innerPadding ->
             Column(

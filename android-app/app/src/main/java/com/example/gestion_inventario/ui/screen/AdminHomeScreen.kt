@@ -56,7 +56,8 @@ fun AdminHomeScreen(
     MainDrawer(navController, drawerState, scope){
         // Pagina principal (TopBar + contenido)
         Scaffold(
-            topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
+            //topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
+            topBar = {MainTopBar(navController, drawerState, scope)}
         ) {
             Column(
                 modifier = Modifier

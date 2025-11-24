@@ -10,7 +10,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.gestion_inventario.data.local.database.AppDatabase
-import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
@@ -24,12 +23,10 @@ fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
 
 // Repositorios
     val usuarioRepo = UsuarioRepository(db.usuarioDao())
-    val productoRepo = ProductoRepository(db.productoDao())
 
 // Factory y ViewModel
     val factory = AuthViewModelFactory(
-        usuarioRepository = usuarioRepo,
-        productoRepository = productoRepo
+        usuarioRepository = usuarioRepo
     )
     val viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
 

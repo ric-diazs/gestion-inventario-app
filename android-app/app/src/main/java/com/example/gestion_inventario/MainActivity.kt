@@ -22,6 +22,8 @@ import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.navigation.AppNavigation
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
+import com.example.gestion_inventario.viewmodel.ProductoViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +44,17 @@ class MainActivity : ComponentActivity() {
 
             // Ahora usamos ViewModel con Factory (mas info aca: https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories)
             val authViewModel: AuthViewModel = viewModel(
-                factory = AuthViewModelFactory(usuarioRepository, productoRepository)
+                factory = AuthViewModelFactory(usuarioRepository)
+            )
+
+            val prodViewModel: ProductoViewModel = viewModel(
+                factory = ProductoViewModelFactory(productoRepository)
             )
 
             Gestion_inventarioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     // Se implementa flujo de navegacion en vez de mostrar una vista inicial
-                    AppNavigation(authViewModel)
+                    AppNavigation(authViewModel, prodViewModel)
                 }
             }
         }

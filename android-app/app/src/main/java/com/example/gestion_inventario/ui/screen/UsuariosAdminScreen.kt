@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.gestion_inventario.data.local.database.AppDatabase
-import com.example.gestion_inventario.data.repository.ProductoRepository
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.navigation.Routes
 
@@ -52,10 +51,9 @@ fun UsuariosAdminScreen(
 	val context = LocalContext.current
 	val db = AppDatabase.getDatabase(context)
 	val usuarioRepo = UsuarioRepository(db.usuarioDao())
-	val productoRepo = ProductoRepository(db.productoDao())
 
 	// Crear el factory del ViewModel
-	val factory = AuthViewModelFactory(usuarioRepo, productoRepo)
+	val factory = AuthViewModelFactory(usuarioRepo)
 	val viewModel: AuthViewModel = viewModel(factory = factory)
 
 	val usuarios by viewModel.usuarios.collectAsState()
@@ -71,7 +69,7 @@ fun UsuariosAdminScreen(
     // Implementacion de Drawer
     MainDrawer(navController, drawerState, scope){    
     	Scaffold(
-    		topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
+    		topBar = {MainTopBar(navController, drawerState, scope)}
     	){ innerPadding ->
     		Column(
     			modifier = Modifier

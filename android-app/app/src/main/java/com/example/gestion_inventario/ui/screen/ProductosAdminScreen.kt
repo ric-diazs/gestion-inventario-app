@@ -42,14 +42,15 @@ import com.example.gestion_inventario.navigation.Routes
 
 import com.example.gestion_inventario.ui.components.MainDrawer
 import com.example.gestion_inventario.ui.components.MainTopBar
-import com.example.gestion_inventario.viewmodel.AuthViewModel
+//import com.example.gestion_inventario.viewmodel.AuthViewModel
 //import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
 
 
 @Composable
 fun ProductosAdminScreen(
 	navController: NavController,
-	viewModel: AuthViewModel
+	viewModel: ProductoViewModel
 ) {
 
 	/*val context = LocalContext.current
@@ -78,7 +79,8 @@ fun ProductosAdminScreen(
     // Implementacion de Drawer
     MainDrawer(navController, drawerState, scope){    
     	Scaffold(
-    		topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
+    		topBar = {MainTopBar(navController, drawerState, scope)}
+    		//topBar = {MainTopBar(navController, drawerState, scope, viewModel)}
     	){ innerPadding ->
     		Column(
     			modifier = Modifier

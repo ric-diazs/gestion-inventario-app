@@ -32,13 +32,15 @@ import androidx.navigation.NavController
 
 import com.example.gestion_inventario.navigation.Routes
 import com.example.gestion_inventario.ui.components.SecundaryTopBar
-import com.example.gestion_inventario.viewmodel.AuthViewModel
+//import com.example.gestion_inventario.viewmodel.AuthViewModel
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AgregarProductoScreen(
     navController: NavController,
-    viewModel: AuthViewModel
+    viewModel: ProductoViewModel
+    //viewModel: AuthViewModel
 ){
     // Variable para gestionar estado de los atributos de AgregarProductoUIState
     val estadoAgregarProducto by viewModel.registrarProducto.collectAsState()

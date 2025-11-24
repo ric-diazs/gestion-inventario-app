@@ -21,9 +21,10 @@ import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
 import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
 import com.example.gestion_inventario.ui.screen.PerfilUsuarioScreen
 import com.example.gestion_inventario.viewmodel.AuthViewModel
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
 
 @Composable
-fun AppNavigation(authViewModel: AuthViewModel) {
+fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel) {
 	val navController = rememberNavController()
 
 	// Se pueden agregar los viewModels aca
@@ -39,7 +40,8 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		}
 
 		composable(route = Routes.ProductosAdmin.ruta) {
-			ProductosAdminScreen(navController, authViewModel)
+			//ProductosAdminScreen(navController)
+			ProductosAdminScreen(navController, prodViewModel)
 		}
 
 		composable(route = Routes.UsuariosAdmin.ruta) {
@@ -55,7 +57,8 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		}
 
 		composable(route = Routes.AgregarProducto.ruta) {
-			AgregarProductoScreen(navController, authViewModel)
+			//AgregarProductoScreen(navController, authViewModel)
+			AgregarProductoScreen(navController, prodViewModel)
 		}
 
 		composable(route = Routes.RegistrarUsuario.ruta) {
@@ -89,7 +92,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		) { backStackEntry ->
 			//val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
 			val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
-			DetalleProductoScreen(navController, productoId, authViewModel)
+			DetalleProductoScreen(navController, productoId, prodViewModel)
 		}
 
 		composable(
@@ -99,7 +102,7 @@ fun AppNavigation(authViewModel: AuthViewModel) {
 		) { backStackEntry ->
 			//val productoId = backStackEntry.arguments?.getLong("productoId") ?: 0L
 			val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
-			EditarProductoScreen(navController, productoId, authViewModel)
+			EditarProductoScreen(navController, productoId, prodViewModel)
 			//EditarProductoScreen(navController, productoId)
 		}
 

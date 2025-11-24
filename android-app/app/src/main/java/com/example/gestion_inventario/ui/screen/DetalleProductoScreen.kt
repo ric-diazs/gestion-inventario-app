@@ -38,8 +38,9 @@ import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.ui.components.MainDrawer
 //import com.example.gestion_inventario.ui.components.MainTopBar
 import com.example.gestion_inventario.ui.components.SecundaryTopBar
-import com.example.gestion_inventario.viewmodel.AuthViewModel
+//import com.example.gestion_inventario.viewmodel.AuthViewModel
 //import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.viewmodel.ProductoViewModel
 import com.example.gestion_inventario.navigation.Routes
 import kotlinx.coroutines.launch
 
@@ -47,7 +48,7 @@ import kotlinx.coroutines.launch
 fun DetalleProductoScreen(
     navController: NavController,
     productoId: Int,
-    viewModel: AuthViewModel
+    viewModel: ProductoViewModel
     //productoId: Long
 ) {
 

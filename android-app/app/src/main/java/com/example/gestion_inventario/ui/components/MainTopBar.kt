@@ -25,21 +25,21 @@ import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.R
 import com.example.gestion_inventario.navigation.Routes
-import com.example.gestion_inventario.viewmodel.AuthViewModel
+//import com.example.gestion_inventario.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainTopBar(
 	navController: NavController,
     drawerState: DrawerState,
-    scope: CoroutineScope,
-    viewModel: AuthViewModel
+    scope: CoroutineScope//,
+    //viewModel: AuthViewModel
 ) {
     // Se accede al valor actual del estado del usuario logueado exitosamente a traves del ViewModel
-    val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
+    //val estadoUsuario = viewModel.usuarioLogueado.collectAsState().value
 
     // Se accede al tipo de usuario logueado para hacer restricciones a vistas si no es 'Admin'
-    val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
+    //val tipoUsuario: String = estadoUsuario?.tipoUsuario ?: ""
 
 	// Barra de navegacion (topbar): Es un TopBar centrado
 	CenterAlignedTopAppBar(
@@ -67,11 +67,11 @@ fun MainTopBar(
             }
 
             // Restriccion: Solo usuario 'Admin' puede acceder a esta vista
-            if(tipoUsuario == "Admin") {
+            //if(tipoUsuario == "Admin") {
                 IconButton(onClick = {navController.navigate(route = Routes.UsuariosAdmin.ruta)}) {
                     Icon(painter = painterResource(id = R.drawable.ic_groups), contentDescription = "Icono de Usuarios", modifier = Modifier.size(24.dp))
                 }
-            }
+            //}
 
             IconButton(onClick = {navController.navigate(route = Routes.ReportarProblema.ruta)}) {
                 Icon(imageVector = Icons.Filled.Warning, contentDescription = "Icono de Reportar")
