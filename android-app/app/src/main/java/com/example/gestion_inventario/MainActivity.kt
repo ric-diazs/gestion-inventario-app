@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.gestion_inventario.ui.theme.Gestion_inventarioTheme
 
@@ -25,7 +26,8 @@ import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         setContent {
             // Lineas de codigo para construir la base de datos
             val context = LocalContext.current.applicationContext // Con 'applicationContext' se construye la BBDD
