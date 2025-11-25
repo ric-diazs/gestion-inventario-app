@@ -2,6 +2,11 @@ package com.example.gestion_inventario.data.repository
 
 import com.example.gestion_inventario.data.local.dao.UsuarioDao
 import com.example.gestion_inventario.data.local.entity.UsuarioEntity
+import com.example.gestion_inventario.data.remote.model.IdObject
+import com.example.gestion_inventario.data.remote.model.TipoUsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioSolicitud
+import com.example.gestion_inventario.data.remote.RetrofitInstance
 import kotlinx.coroutines.flow.Flow
 
 // Implementacion de logica de negocio mediante el uso de las funciones definidas en interfaz del DAO
@@ -63,13 +68,45 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 		}
 	}
 
-
-
 	suspend fun actualizarUsuario(usuario: UsuarioEntity) {
 		usuarioDao.upsertUsuario(usuario)
 	}
 
+	// Consultas API (Metodo GET)
+	suspend fun obtenerTiposUsuarioAPI() : List<TipoUsuarioAPI> = RetrofitInstance.api.obtenerTiposUsuario()
 
+	suspend fun obtenerUsuariosAPI() : List<UsuarioAPI> = RetrofitInstance.api.obtenerUsuarios()
+
+	suspend fun obtenerUsuarioAPIPorId(id: Int) : UsuarioAPI = RetrofitInstance.api.obtenerUsuarioPorId(id)
+
+	// Registro de usuarios en API (Metodo POST)
+	suspend fun registrarUsuarioAPI(
+		nombre: String,
+		apellidos: String,
+		correo: String,
+		password: String,
+		idTipoUsuario: Int
+	){
+		val bodyUsuario = UsuarioSolicitud(
+			nombre = nombre,
+			apellidos = apellidos,
+			correo = correo,
+			password = password,
+			tipoUsuario = IdObject(idTipoUsuario)
+		)
+
+		RetrofitInstance.api.registrarUsuario(bodyUsuario)
+	}
+
+	// Actualizar usuario en API (Metodo PUT)
+	suspend fun actualizarUsuarioAPI(id: Int, usuarioActualizar: UsuarioSolicitud) {
+		return RetrofitInstance.api.actualizarUsuario(id, usuarioActualizar)
+	}
+
+	// Eliminar usuario en API (Metodo DELETE)
+	suspend fun eliminarUsuarioAPI(id: Int) {
+		return RetrofitInstance.api.eliminarUsuario(id)
+	}
 }
 
 

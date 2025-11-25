@@ -7,9 +7,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.gestion_inventario.data.local.database.AppDatabase
+import com.example.gestion_inventario.data.remote.model.IdObject
+import com.example.gestion_inventario.data.remote.model.UsuarioSolicitud
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
@@ -17,44 +20,60 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
-    val context = LocalContext.current
-    val db = AppDatabase.getDatabase(context)
+fun EditarUsuarioScreen(
+    navController: NavController,
+    viewModel: AuthViewModel,
+    usuarioId: Int
+    //usuarioId: Long
+) {
+    //val context = LocalContext.current
+    //val db = AppDatabase.getDatabase(context)
 
 // Repositorios
-    val usuarioRepo = UsuarioRepository(db.usuarioDao())
+    //val usuarioRepo = UsuarioRepository(db.usuarioDao())
 
 // Factory y ViewModel
-    val factory = AuthViewModelFactory(
-        usuarioRepository = usuarioRepo
-    )
-    val viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
+    //val factory = AuthViewModelFactory(
+    //    usuarioRepository = usuarioRepo
+    //)
+    //val viewModel: AuthViewModel = androidx.lifecycle.viewmodel.compose.viewModel(factory = factory)
 
 // Estado del usuario
     val usuario by viewModel.usuarioSeleccionado.collectAsState()
+
+    val usuarioApi by viewModel.usuarioApi.collectAsState()
+
+    val tiposUsuario by viewModel.tiposUsuario.collectAsState()
+
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(key1 = usuarioId) {
-        viewModel.cargarUsuarioPorId(usuarioId)
+        viewModel.cargarUsuarioApiPorId(usuarioId)
     }
 
+    LaunchedEffect(Unit){
+        viewModel.cargarTiposUsuarioApi()
+    }
 
     var nombre by remember { mutableStateOf("") }
     var apellidos by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var tipoUsuario by remember { mutableStateOf("") }
+    var correo by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var idTipoUsuario by remember { mutableStateOf<Int?>(null) }
+    //var tipoUsuario by remember { mutableStateOf("") }
 
-    LaunchedEffect(usuario) {
-        usuario?.let {
+    LaunchedEffect(usuarioApi) {
+        usuarioApi?.let {
             nombre = it.nombre
             apellidos = it.apellidos
-            email = it.email
-            tipoUsuario = it.tipoUsuario
+            password = it.password
+            correo = it.correo
+            idTipoUsuario = viewModel.obtenerTipoUsuarioDeUsuario(usuarioId)?.id
         }
     }
 
     var expanded by remember { mutableStateOf(false) }
-    val tiposUsuario = listOf("Admin", "Empleado")
+    //val tiposUsuario = listOf("Admin", "Empleado")
 
     Scaffold(
         topBar = {
@@ -68,14 +87,14 @@ fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
                 .padding(innerPadding)
                 .fillMaxSize()
                 .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally, // 👈 Centra los campos
-            verticalArrangement = Arrangement.Center // 👈 Centra verticalmente
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             OutlinedTextField(
                 value = nombre,
                 onValueChange = { nombre = it },
                 label = { Text("Nombre") },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -84,44 +103,56 @@ fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
                 value = apellidos,
                 onValueChange = { apellidos = it },
                 label = { Text("Apellidos") },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
+                value = correo,
+                onValueChange = { correo = it },
                 label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(0.9f)
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // 🔽 Campo desplegable tipo usuario
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                visualTransformation = PasswordVisualTransformation(),
+                label = { Text("Contraseña") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Campo desplegable tipo usuario
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = !expanded }
             ) {
                 OutlinedTextField(
-                    value = tipoUsuario,
+                    value = tiposUsuario.firstOrNull { it.id == idTipoUsuario }?.nombreTipo ?: "",
                     onValueChange = {},
                     label = { Text("Tipo de Usuario") },
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                     modifier = Modifier
-                        .menuAnchor()
-                        .fillMaxWidth(0.9f)
+                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                        .fillMaxWidth()
                 )
+
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    tiposUsuario.forEach { tipo ->
+                    tiposUsuario.forEach { tipoUser ->
                         DropdownMenuItem(
-                            text = { Text(tipo) },
+                            text = { Text(tipoUser.nombreTipo) },
                             onClick = {
-                                tipoUsuario = tipo
+                                //tipoUsuario = tipo
+                                idTipoUsuario = tipoUser.id
                                 expanded = false
                             }
                         )
@@ -136,7 +167,16 @@ fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 Button(onClick = {
-                    usuario?.let {
+                    val usuarioActualizar = UsuarioSolicitud(
+                        nombre = nombre,
+                        apellidos = apellidos,
+                        correo = correo,
+                        password = password,
+                        tipoUsuario = IdObject(idTipoUsuario!!)
+                    )
+
+                    viewModel.submitActualizarUsuarioAPI(usuarioId, usuarioActualizar)
+                    /*usuario?.let {
                             viewModel.actualizarUsuario(
                                 it.copy(
                                     nombre = nombre,
@@ -147,9 +187,9 @@ fun EditarUsuarioScreen(navController: NavController, usuarioId: Long) {
                             ){
                             navController.popBackStack() // Vuelve atrás
                         }
-                    }
+                    }*/
                 }) {
-                    Text("Guardar")
+                    Text("Actualizar")
                 }
 
                 Button(onClick = { navController.popBackStack() }) {

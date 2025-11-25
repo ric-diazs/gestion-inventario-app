@@ -45,7 +45,7 @@ fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel
 		}
 
 		composable(route = Routes.UsuariosAdmin.ruta) {
-			UsuariosAdminScreen(navController)
+			UsuariosAdminScreen(navController, authViewModel)
 		}
 
 		composable(route = Routes.ReportarProblema.ruta) {
@@ -71,18 +71,20 @@ fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel
 
 		composable(
 			route = "detalleUsuario/{usuarioId}",
-			arguments = listOf(navArgument("usuarioId") { type = NavType.LongType })
+			//arguments = listOf(navArgument("usuarioId") { type = NavType.LongType })
+			arguments = listOf(navArgument("usuarioId") { type = NavType.IntType })
 		) { backStackEntry ->
-			val usuarioId = backStackEntry.arguments?.getLong("usuarioId") ?: 0L
-			DetalleUsuarioScreen(navController, usuarioId)
+			val usuarioId = backStackEntry.arguments?.getInt("usuarioId") ?: 0
+			DetalleUsuarioScreen(navController, authViewModel, usuarioId)
 		}
 
 		composable(
 			route = "editarUsuario/{usuarioId}",
-			arguments = listOf(navArgument("usuarioId") { type = NavType.LongType })
+			//arguments = listOf(navArgument("usuarioId") { type = NavType.LongType })
+			arguments = listOf(navArgument("usuarioId") { type = NavType.IntType })
 		) { backStackEntry ->
-			val usuarioId = backStackEntry.arguments?.getLong("usuarioId") ?: 0L
-			EditarUsuarioScreen(navController, usuarioId)
+			val usuarioId = backStackEntry.arguments?.getInt("usuarioId") ?: 0
+			EditarUsuarioScreen(navController, authViewModel, usuarioId)
 		}
 		
 		composable(

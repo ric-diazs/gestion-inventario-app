@@ -11,6 +11,9 @@ import kotlinx.coroutines.launch
 
 import com.example.gestion_inventario.data.local.entity.UsuarioEntity
 import com.example.gestion_inventario.data.remote.model.IdObject
+import com.example.gestion_inventario.data.remote.model.TipoUsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioSolicitud
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.model.AgregarProductoUiState
 import com.example.gestion_inventario.model.LoginUiState
@@ -37,7 +40,17 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 	// Manejo de estado de formulario de Agregar Producto
 	private val _registrarUsuario = MutableStateFlow(value = RegistroUsuarioUiState())
 
+	private val _usuarios = MutableStateFlow<List<UsuarioEntity>>(emptyList())
+
+	private val _usuarioSeleccionado = MutableStateFlow<UsuarioEntity?>(null)
+
+	private val _usuariosApi = MutableStateFlow<List<UsuarioAPI>>(emptyList())
+
+	private val _usuarioApi = MutableStateFlow<UsuarioAPI?>(null)
+
 	private val _idObject = MutableStateFlow<IdObject?>(null)
+
+	private val _tiposUsuario = MutableStateFlow<List<TipoUsuarioAPI>>(emptyList())
 
     // Esta variable publica es la que se usara para acceder al estado del login desde fuera
 	// de la clase AuthViewModel. Tambien es un StateFlow de tipo LoginUiState, pero no es mutable.
@@ -52,7 +65,27 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 	// Variable publica para acceder a estado de atributos de agregar producto desde otra clase
 	val registrarUsuario: StateFlow<RegistroUsuarioUiState> = _registrarUsuario
 
+	val usuarios: StateFlow<List<UsuarioEntity>> = _usuarios
+
+	val usuarioSeleccionado: StateFlow<UsuarioEntity?> = _usuarioSeleccionado
+
+	val usuariosApi : StateFlow<List<UsuarioAPI>> = _usuariosApi
+
+	val usuarioApi : StateFlow<UsuarioAPI?> = _usuarioApi
+
 	val idObject : StateFlow<IdObject?> = _idObject
+
+	val tiposUsuario : StateFlow<List<TipoUsuarioAPI>> = _tiposUsuario
+
+	/*
+	=====================================
+	Llamado automatico de funciones a API
+	=====================================
+	*/
+	init {
+		cargarTiposUsuarioApi()
+		cargarUsuariosApi()
+	}
 
 
 	/*==== Funciones para validar login. ====*/
@@ -207,9 +240,9 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 			null
 	}
 
-	fun actualizarTipoUsuario(valorTipoUsuario: String) {
+	fun actualizarTipoUsuario(valorTipoUsuario: String, valorIdTipoUsuario: Int) {
 		//_reportarProblema.value = _reportarProblema.value.copy(tipoProblema = valorTipoProblema)
-		_registrarUsuario.update{ it.copy(tipoUsuario = valorTipoUsuario, errorTipoUsuario = null) }
+		_registrarUsuario.update{ it.copy(tipoUsuario = valorTipoUsuario, idTipoUsuario = valorIdTipoUsuario, errorTipoUsuario = null) }
 	}
 
 	/*== Funciones para gestionar estados de campos de formulario Registrar Usuarios == */
@@ -230,7 +263,7 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 
 	fun onContrasenaChange(valorContrasena: String) {
 		_registrarUsuario.update { it.copy(contrasena = valorContrasena, errorContrasena = validarContrasena(valorContrasena)) }
-		_registrarUsuario.update { it.copy(errorConfirmar = validarConfirmar(it.contrasena, it.confirmar)) }
+		//_registrarUsuario.update { it.copy(errorConfirmar = validarConfirmar(it.contrasena, it.confirmar)) }
 
 	}
 
@@ -249,12 +282,6 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 	}
 
 
-	// Lista de usuarios registrados
-
-	private val _usuarios = MutableStateFlow<List<UsuarioEntity>>(emptyList())
-	val usuarios: StateFlow<List<UsuarioEntity>> = _usuarios
-
-
 	// Cargar los usuarios desde el repositorio
 	fun cargarUsuarios() {
 		viewModelScope.launch {
@@ -263,12 +290,6 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 			}
 		}
 	}
-
-
-
-
-	private val _usuarioSeleccionado = MutableStateFlow<UsuarioEntity?>(null)
-	val usuarioSeleccionado: StateFlow<UsuarioEntity?> = _usuarioSeleccionado
 
 	fun cargarUsuarioPorId(id: Long) {
 		viewModelScope.launch {
@@ -340,6 +361,74 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 				password = estadoRegistrarUsua.contrasena,
 				tipoUsuario = estadoRegistrarUsua.tipoUsuario
 			)
+		}
+	}
+
+	/*
+	=======================================================
+	        Funciones que interactuan con API (Retrofit)
+	=======================================================
+	*/
+	fun cargarTiposUsuarioApi() {
+		viewModelScope.launch {
+			try{
+				_tiposUsuario.value = usuarioRepository.obtenerTiposUsuarioAPI()
+			} catch(e: Exception) {
+				println("Error al obtener los tipos de usuario: ${e.localizedMessage}")
+			}
+		}
+	}
+
+	fun cargarUsuariosApi() {
+		viewModelScope.launch {
+			try{
+				_usuariosApi.value = usuarioRepository.obtenerUsuariosAPI()
+			} catch(e: Exception) {
+				println("Error al obtener los usuarios: ${e.localizedMessage}")
+			}
+		}
+	}
+
+	fun cargarUsuarioApiPorId(id: Int){
+		viewModelScope.launch{
+			try{
+				_usuarioApi.value = usuarioRepository.obtenerUsuarioAPIPorId(id)
+			} catch(e: Exception) {
+				println("Error al obtener a usuario de id ${id}: ${e.localizedMessage}")
+			}
+		}
+	}
+
+	fun submitRegistroUsuarioApi() {
+		val estadoRegistrarUsuaApi = _registrarUsuario.value
+
+		viewModelScope.launch{
+			usuarioRepository.registrarUsuarioAPI(
+				nombre = estadoRegistrarUsuaApi.nombre,
+				apellidos = estadoRegistrarUsuaApi.apellido,
+				correo = estadoRegistrarUsuaApi.email,
+				password = estadoRegistrarUsuaApi.contrasena,
+				idTipoUsuario = estadoRegistrarUsuaApi.idTipoUsuario!!
+			)
+		}
+	}
+
+	fun submitActualizarUsuarioAPI(id: Int, usuarioActualizar: UsuarioSolicitud){
+		viewModelScope.launch{
+			usuarioRepository.actualizarUsuarioAPI(id, usuarioActualizar)
+		}
+	}
+
+	fun submitEliminarUsuarioAPI(id: Int) {
+		viewModelScope.launch{
+			usuarioRepository.eliminarUsuarioAPI(id)
+		}
+	}
+
+	// Funciones para obtener el tipo de usuario de un usuario
+	fun obtenerTipoUsuarioDeUsuario(usuarioId: Int) : TipoUsuarioAPI? {
+		return tiposUsuario.value.firstOrNull { tUsuarioApi ->
+			tUsuarioApi.usuarios.any {it.id == usuarioId}
 		}
 	}
 }

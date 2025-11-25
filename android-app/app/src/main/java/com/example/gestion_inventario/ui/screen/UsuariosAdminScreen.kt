@@ -46,20 +46,24 @@ import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
 
 @Composable
 fun UsuariosAdminScreen(
-	navController: NavController
+	navController: NavController,
+	viewModel: AuthViewModel
 ) {
-	val context = LocalContext.current
-	val db = AppDatabase.getDatabase(context)
-	val usuarioRepo = UsuarioRepository(db.usuarioDao())
+	//val context = LocalContext.current
+	//val db = AppDatabase.getDatabase(context)
+	//val usuarioRepo = UsuarioRepository(db.usuarioDao())
 
 	// Crear el factory del ViewModel
-	val factory = AuthViewModelFactory(usuarioRepo)
-	val viewModel: AuthViewModel = viewModel(factory = factory)
+	//val factory = AuthViewModelFactory(usuarioRepo)
+	//val viewModel: AuthViewModel = viewModel(factory = factory)
 
-	val usuarios by viewModel.usuarios.collectAsState()
+	//val usuarios by viewModel.usuarios.collectAsState()
+
+	val usuariosApi by viewModel.usuariosApi.collectAsState()
 
 	LaunchedEffect(Unit) {
-		viewModel.cargarUsuarios()
+		//viewModel.cargarUsuarios()
+		viewModel.cargarUsuariosApi()
 	}
 
 	// Variables para menu Drawer (Falta importar dependencias en header)
@@ -104,7 +108,7 @@ fun UsuariosAdminScreen(
 				Spacer(modifier = Modifier.height(16.dp))
 
 				// Mostrar lista o mensaje vacío
-				if (usuarios.isEmpty()) {
+				if (usuariosApi.isEmpty()) {
 					Text(
 						text = "No hay usuarios registrados",
 						style = MaterialTheme.typography.bodyLarge,
@@ -117,29 +121,29 @@ fun UsuariosAdminScreen(
 							.fillMaxWidth()
 							.padding(horizontal = 16.dp)
 					) {
-						items(usuarios) { usuario ->
+						items(usuariosApi) { usuarioApi ->
+							val tipoUsuario = viewModel.obtenerTipoUsuarioDeUsuario(usuarioApi.id)
+
 							Card(
 								modifier = Modifier
 									.fillMaxWidth()
 									.padding(vertical = 8.dp)
 									.clickable{
-										navController.navigate("detalleUsuario/${usuario.id}")
+										navController.navigate("detalleUsuario/${usuarioApi.id}")
 									},
 								elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
 							) {
 								Column(modifier = Modifier.padding(16.dp)) {
 									Text(
-										text = "${usuario.nombre} ${usuario.apellidos}",
+										text = "${usuarioApi.nombre} ${usuarioApi.apellidos}",
 										fontWeight = FontWeight.Bold
 									)
-									Text(text = usuario.email)
-									Text(text = "Tipo: ${usuario.tipoUsuario}")
+									Text(text = usuarioApi.correo)
+									Text(text = "Tipo: ${tipoUsuario?.nombreTipo ?: "Desconocido"}")
 								}
 							}
 						}
 					}
-
-
 				}
     		}
     	}

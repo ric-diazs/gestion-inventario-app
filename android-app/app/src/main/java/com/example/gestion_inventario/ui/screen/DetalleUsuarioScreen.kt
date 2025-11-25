@@ -22,23 +22,28 @@ import kotlinx.coroutines.launch
 @Composable
 fun DetalleUsuarioScreen(
     navController: NavController,
-    usuarioId: Long
+    viewModel: AuthViewModel,
+    usuarioId: Int
+    //usuarioId: Long
 ) {
-    val context = androidx.compose.ui.platform.LocalContext.current
-    val db = AppDatabase.getDatabase(context)
-    val usuarioRepo = UsuarioRepository(db.usuarioDao())
+    //val context = androidx.compose.ui.platform.LocalContext.current
+    //val db = AppDatabase.getDatabase(context)
+    //val usuarioRepo = UsuarioRepository(db.usuarioDao())
 
-    val factory = AuthViewModelFactory(usuarioRepo)
-    val viewModel: AuthViewModel = viewModel(factory = factory)
+    //val factory = AuthViewModelFactory(usuarioRepo)
+    //val viewModel: AuthViewModel = viewModel(factory = factory)
 
     val usuario by viewModel.usuarioSeleccionado.collectAsState()
+
+    val usuarioApi by viewModel.usuarioApi.collectAsState()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
     // Cargar usuario al entrar
     LaunchedEffect(usuarioId) {
-        viewModel.cargarUsuarioPorId(usuarioId)
+        //viewModel.cargarUsuarioPorId(usuarioId)
+        viewModel.cargarUsuarioApiPorId(usuarioId)
     }
 
     MainDrawer(navController, drawerState, scope) {
@@ -51,21 +56,23 @@ fun DetalleUsuarioScreen(
                     .padding(24.dp)
                     .fillMaxSize()
             ) {
-                usuario?.let { usuario ->
+                //usuario?.let { usuario ->
+                usuarioApi?.let { usuarioApi ->
+                    val tipoUsuario = viewModel.obtenerTipoUsuarioDeUsuario(usuarioApi.id)
                     Text(
-                        text = "${usuario.nombre} ${usuario.apellidos}",
+                        text = "${usuarioApi.nombre} ${usuarioApi.apellidos}",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
-                    Text(text = "Correo: ${usuario.email}")
-                    Text(text = "Tipo: ${usuario.tipoUsuario}")
+                    Text(text = "Correo: ${usuarioApi.correo}")
+                    Text(text = "Tipo: ${tipoUsuario?.nombreTipo?:"Desconocido"}")
 
                     Spacer(modifier = Modifier.height(24.dp))
 
                     // 🔹 Botón para editar
                     Button(
                         onClick = {
-                            navController.navigate("editarUsuario/${usuario.id}")
+                            navController.navigate("editarUsuario/${usuarioApi.id}")
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
@@ -78,8 +85,10 @@ fun DetalleUsuarioScreen(
                     Button(
                         onClick = {
                             scope.launch {
-                                viewModel.eliminarUsuario(usuario.id)
+                                viewModel.submitEliminarUsuarioAPI(usuarioId)
                                 navController.popBackStack()
+                                //viewModel.eliminarUsuario(usuario.id)
+                                //navController.popBackStack()
                             }
                         },
                         colors = ButtonDefaults.buttonColors(

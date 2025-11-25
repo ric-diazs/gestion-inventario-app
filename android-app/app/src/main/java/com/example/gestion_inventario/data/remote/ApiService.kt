@@ -12,6 +12,9 @@ import com.example.gestion_inventario.data.remote.model.ColorAPI
 import com.example.gestion_inventario.data.remote.model.ProductoAPI
 import com.example.gestion_inventario.data.remote.model.ProductoSolicitud
 import com.example.gestion_inventario.data.remote.model.TallaAPI
+import com.example.gestion_inventario.data.remote.model.TipoUsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioAPI
+import com.example.gestion_inventario.data.remote.model.UsuarioSolicitud
 
 interface ApiService {
 	// Llamadas a endpoints de Producto de API
@@ -35,4 +38,23 @@ interface ApiService {
 
 	@GET("tallas")
 	suspend fun obtenerTallas(): List<TallaAPI>
+
+	// Llamadas a endpoints de Usuario
+	@GET("tipos-usuario")
+	suspend fun obtenerTiposUsuario(): List<TipoUsuarioAPI>
+
+	@GET("usuarios")
+	suspend fun obtenerUsuarios(): List<UsuarioAPI>
+
+	@GET("usuarios/{id}")
+	suspend fun obtenerUsuarioPorId(@Path("id") id: Int): UsuarioAPI
+
+	@POST("usuarios")
+	suspend fun registrarUsuario(@Body usuario : UsuarioSolicitud)
+
+	@PUT("usuarios/{id}")
+	suspend fun actualizarUsuario(@Path("id") id: Int, @Body usuario: UsuarioSolicitud)
+
+	@DELETE("usuarios/{id}")
+	suspend fun eliminarUsuario(@Path("id") id: Int)
 }

@@ -8,6 +8,7 @@ data class RegistroUsuarioUiState (
     val contrasena: String = "",                          // 5) Contraseña
     val confirmar: String = "",                           // 6) Confirmar contraseña
     val tipoUsuario: String = "",                         // 7) Tipo de usuario
+    val idTipoUsuario: Int? = null,                       // 8) Id tipo de usuario  
 
     // Errores por campo
     val errorNombre: String? = null,
