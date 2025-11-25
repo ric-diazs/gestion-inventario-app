@@ -5,6 +5,8 @@ data class ReportarProblemaUiState(
 	val tipoProblema: String = "",
 	val nivelProblema: String = "",
 	val detalleProblema: String = "",
+	val idTipoProblema: Int? = null,
+	val idNivelProblema: Int? = null,
 
 	// Errores (El detalle de problema no sera un campo obligatorio, asi que no se validara)
 	val emailError: String? = null,

@@ -11,20 +11,24 @@ import androidx.navigation.navArgument
 import com.example.gestion_inventario.ui.screen.AdminHomeScreen
 import com.example.gestion_inventario.ui.screen.AgregarProductoScreen
 import com.example.gestion_inventario.ui.screen.DetalleProductoScreen
+import com.example.gestion_inventario.ui.screen.DetalleRepoScreen
 import com.example.gestion_inventario.ui.screen.DetalleUsuarioScreen
 import com.example.gestion_inventario.ui.screen.EditarProductoScreen
+import com.example.gestion_inventario.ui.screen.EditarRepoScreen
 import com.example.gestion_inventario.ui.screen.EditarUsuarioScreen
+import com.example.gestion_inventario.ui.screen.FormularioRepoScreen
 import com.example.gestion_inventario.ui.screen.LoginScreen
 import com.example.gestion_inventario.ui.screen.ProductosAdminScreen
 import com.example.gestion_inventario.ui.screen.RegistroUsuarioScreen
 import com.example.gestion_inventario.ui.screen.UsuariosAdminScreen
-import com.example.gestion_inventario.ui.screen.ReportarProblemaScreen
 import com.example.gestion_inventario.ui.screen.PerfilUsuarioScreen
+import com.example.gestion_inventario.ui.screen.ReporteProblemaFormScreen
 import com.example.gestion_inventario.viewmodel.AuthViewModel
+import com.example.gestion_inventario.viewmodel.AuthViewModelReporte
 import com.example.gestion_inventario.viewmodel.ProductoViewModel
 
 @Composable
-fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel) {
+fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel, authViewModelReporte: AuthViewModelReporte) {
 	val navController = rememberNavController()
 
 	// Se pueden agregar los viewModels aca
@@ -48,8 +52,12 @@ fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel
 			UsuariosAdminScreen(navController, authViewModel)
 		}
 
+		composable(route = Routes.Reportar.ruta) {
+			FormularioRepoScreen(navController, authViewModel, authViewModelReporte)
+		}
+
 		composable(route = Routes.ReportarProblema.ruta) {
-			ReportarProblemaScreen(navController, authViewModel)
+			ReporteProblemaFormScreen(navController,authViewModelReporte)
 		}
 
 		composable(route = Routes.Login.ruta) {
@@ -106,6 +114,24 @@ fun AppNavigation(authViewModel: AuthViewModel, prodViewModel: ProductoViewModel
 			val productoId = backStackEntry.arguments?.getInt("productoId") ?: 0
 			EditarProductoScreen(navController, productoId, prodViewModel)
 			//EditarProductoScreen(navController, productoId)
+		}
+
+		composable(
+			route = "detalleProblema/{reporteId}",
+			//arguments = listOf(navArgument("usuarioId") { type = NavType.LongType })
+			arguments = listOf(navArgument("reporteId") { type = NavType.IntType })
+		) { backStackEntry ->
+			val reporteId = backStackEntry.arguments?.getInt("reporteId") ?: 0
+			DetalleRepoScreen(navController,authViewModelReporte, reporteId)
+		}
+
+		composable(
+			route = "editarReporte/{reporteId}",
+			arguments = listOf(navArgument("reporteId") { type = NavType.IntType })
+		) { backStackEntry ->
+			val reporteId = backStackEntry.arguments?.getInt("reporteId") ?: 0
+			EditarRepoScreen(navController, authViewModelReporte, reporteId  )
+
 		}
 
 	}

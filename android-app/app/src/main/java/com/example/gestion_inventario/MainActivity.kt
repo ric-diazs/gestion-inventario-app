@@ -19,11 +19,14 @@ import com.example.gestion_inventario.ui.theme.Gestion_inventarioTheme
 import com.example.gestion_inventario.data.local.database.AppDatabase
 import com.example.gestion_inventario.data.repository.UsuarioRepository
 import com.example.gestion_inventario.data.repository.ProductoRepository
+import com.example.gestion_inventario.data.repository.ReporteProblemaRepository
 import com.example.gestion_inventario.navigation.AppNavigation
 import com.example.gestion_inventario.viewmodel.AuthViewModel
 import com.example.gestion_inventario.viewmodel.AuthViewModelFactory
+import com.example.gestion_inventario.viewmodel.AuthViewModelReporte
 import com.example.gestion_inventario.viewmodel.ProductoViewModel
 import com.example.gestion_inventario.viewmodel.ProductoViewModelFactory
+import com.example.gestion_inventario.viewmodel.ReporteViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +44,7 @@ class MainActivity : ComponentActivity() {
 
             val usuarioRepository = UsuarioRepository(usuarioDao)
             val productoRepository = ProductoRepository(productoDao)
+            val reporteProblemaRepository= ReporteProblemaRepository()
 
             // Ahora usamos ViewModel con Factory (mas info aca: https://developer.android.com/topic/libraries/architecture/viewmodel/viewmodel-factories)
             val authViewModel: AuthViewModel = viewModel(
@@ -51,10 +55,15 @@ class MainActivity : ComponentActivity() {
                 factory = ProductoViewModelFactory(productoRepository)
             )
 
+            val authViewModelReporte: AuthViewModelReporte = viewModel(
+                factory = ReporteViewModelFactory(reporteProblemaRepository)
+            )
+
+
             Gestion_inventarioTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     // Se implementa flujo de navegacion en vez de mostrar una vista inicial
-                    AppNavigation(authViewModel, prodViewModel)
+                    AppNavigation(authViewModel, prodViewModel, authViewModelReporte)
                 }
             }
         }

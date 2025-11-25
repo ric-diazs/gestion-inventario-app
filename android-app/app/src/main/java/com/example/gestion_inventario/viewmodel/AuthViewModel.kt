@@ -152,51 +152,6 @@ class AuthViewModel(private val usuarioRepository: UsuarioRepository): ViewModel
 		_login.value = LoginUiState() // Se establece el estado inicial del formulario
 	}
 
-	/*==== Funciones para validar campos de reporte de problema. ====*/
-	fun validarTipoProblema(tipoProblema: String): String? {
-		if(estaVacio(tipoProblema)) return "Debes elegir el tipo de problema" else return null
-	}
-
-	fun validarNivelProblema(nivelProblema: String): String? {
-		if(estaVacio(nivelProblema)) return "Debes elegir un nivel de problema" else return null
-	}
-
-	/*==== Funciones para gestionar estados de campos de reporte de problema. ====*/
-	fun onTipoProblemaChange(valorTipoProblema: String) {
-		_reportarProblema.update{ it.copy(tipoProblema = valorTipoProblema, tipoProblemaError = validarTipoProblema(valorTipoProblema)) }
-	}
-
-	fun onDetalleProblemaChange(valorDetalleProblema: String) {
-		_reportarProblema.update{ it.copy(detalleProblema = valorDetalleProblema) }
-	}
-
-	// Funcion para actualizar estado del tipo de problema
-	fun actualizarTipoProblema(valorTipoProblema: String) {
-		//_reportarProblema.value = _reportarProblema.value.copy(tipoProblema = valorTipoProblema)
-		_reportarProblema.update{ it.copy(tipoProblema = valorTipoProblema, tipoProblemaError = null) }
-	}
-
-	// Funcion para actualizar estado de nivel de prioridad del problema
-	// Es como el para el 'onValueChange', pero para los radio buttons de esta parte de la vista
-	fun actualizarNivelProblema(valorNivelProblema: String) {
-		_reportarProblema.update{ it.copy(nivelProblema = valorNivelProblema, nivelProblemaError = null) }
-	}
-
-	// Funcion para permitir envio de reporte
-	fun canSubmitReportar():Boolean {
-		val estadoReportarProblema = _reportarProblema.value
-
-		val msgErrorUpdatedTProblema = validarTipoProblema(estadoReportarProblema.tipoProblema)
-		val msgErrorUpdatedNProblema = validarNivelProblema(estadoReportarProblema.nivelProblema)
-
-		_reportarProblema.update{ it.copy(tipoProblemaError = msgErrorUpdatedTProblema, nivelProblemaError = msgErrorUpdatedNProblema) }
-
-		if(msgErrorUpdatedTProblema != null || msgErrorUpdatedNProblema != null) return false
-
-		return true
-	}
-
-
 	//Funciones para validar que los campos de registro de usuarios no esten vacios
 	fun validarNombre(nombre: String): String?{
 		if(nombre.isBlank()) return "El nombre es obligatorio"

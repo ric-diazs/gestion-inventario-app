@@ -16,4 +16,10 @@ sealed class Routes(val ruta: String) {
 	data object  DetalleUsuario : Routes(ruta = "detalleUsuario")
 
 	data object  DetalleProducto : Routes(ruta = "detalleProducto")
+
+	data object  Reportar : Routes(ruta = "reportar")
+
+	data object DetalleProblema: Routes(ruta = "detalleProblema")
+
+	data object  EditarReporte: Routes(ruta = "editarReporte")
 }

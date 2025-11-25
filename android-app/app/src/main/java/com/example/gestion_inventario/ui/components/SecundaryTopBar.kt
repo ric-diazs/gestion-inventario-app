@@ -38,6 +38,9 @@ private fun getDestino(ruta: Routes): String {
     	is Routes.ProductosAdmin -> Routes.ProductosAdmin.ruta
     	is Routes.UsuariosAdmin -> Routes.UsuariosAdmin.ruta
     	is Routes.ReportarProblema -> Routes.ReportarProblema.ruta
+		is Routes.Reportar -> Routes.Reportar.ruta
+		is Routes.DetalleProblema -> Routes.DetalleProblema.ruta
+		is Routes.EditarReporte -> Routes.EditarReporte.ruta
     	is Routes.AgregarProducto -> Routes.AgregarProducto.ruta
     	is Routes.RegistrarUsuario -> Routes.RegistrarUsuario.ruta
     	is Routes.PerfilUsuario -> Routes.PerfilUsuario.ruta
