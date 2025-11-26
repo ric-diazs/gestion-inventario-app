@@ -10,13 +10,15 @@ import com.example.gestion_inventario.data.remote.model.TicketReporteAPI
 import com.example.gestion_inventario.data.remote.model.TipoProblemaAPI
 import retrofit2.Response
 
-class ReporteProblemaRepository {
+open class ReporteProblemaRepository {
 
     suspend fun obtenerTipoProblemaAPI(): List<TipoProblemaAPI> = RetrofitInstance.api.obtenerTiposProblema()
 
     suspend fun obtenerNivelPrioridadAPI(): List<NivelPrioridadAPI> = RetrofitInstance.api.obtenerNivelPrioridad()
 
     suspend fun obtenerReporteProblemaAPI(): List<ReporteProblemaAPI> = RetrofitInstance.api.obtenerReportesProblema()
+
+    open suspend fun obtenerReportesAPI(): List<ReporteProblemaAPI> = RetrofitInstance.api.obtenerReportesProblema()
 
     suspend fun eliminarProblemaAPI(id: Int) {
         RetrofitInstance.api.eliminarReportes(id)
