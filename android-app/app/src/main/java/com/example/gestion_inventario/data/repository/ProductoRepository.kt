@@ -12,7 +12,7 @@ import com.example.gestion_inventario.data.remote.model.TallaAPI
 import com.example.gestion_inventario.data.remote.RetrofitInstance
 import kotlinx.coroutines.flow.Flow
 
-class ProductoRepository(private val productoDao: ProductoDao){
+open class ProductoRepository(private val productoDao: ProductoDao){
     // Registro: Valida posible duplicamiento y registra el producto en caso de no haber duplicados
     suspend fun registrarProducto(
         codigo: String,
@@ -62,7 +62,7 @@ class ProductoRepository(private val productoDao: ProductoDao){
     }
 
     // Consultas API (Metodo GET)
-    suspend fun obtenerProductosAPI(): List<ProductoAPI> = RetrofitInstance.api.obtenerProductos()
+    open suspend fun obtenerProductosAPI(): List<ProductoAPI> = RetrofitInstance.api.obtenerProductos()
 
     suspend fun obtenerColoresAPI(): List<ColorAPI> = RetrofitInstance.api.obtenerColores()
 
