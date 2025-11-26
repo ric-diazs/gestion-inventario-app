@@ -25,6 +25,10 @@ public class ReporteProblema {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    // Agregado
+    @Column(nullable = true)
+    private String correo;
+
     @Column(nullable = true)
     private String descripcion;
 
@@ -36,10 +40,10 @@ public class ReporteProblema {
     private TipoProblema tipoProblema;
 
     // Relacion muchos-a-uno a tabla 'usuario'
-    @ManyToOne
-    @JsonBackReference(value = "ref-reporte-problema-usuario")
-    @JoinColumn(name = "id_usuario", nullable = false, foreignKey = @ForeignKey(name="fk_usuario"))
-    private Usuario usuario;
+    //@ManyToOne
+    //@JsonBackReference(value = "ref-reporte-problema-usuario")
+    //@JoinColumn(name = "id_usuario", nullable = false, foreignKey = @ForeignKey(name="fk_usuario"))
+    //private Usuario usuario;
 
     // Relacion muchos-a-uno a tabla 'nivel_prioridad'
     @ManyToOne

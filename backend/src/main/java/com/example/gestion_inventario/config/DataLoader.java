@@ -64,7 +64,7 @@ public class DataLoader implements CommandLineRunner {
         TipoUsuario tipoAdmin = new TipoUsuario();
         tipoAdmin.setId(1);
 
-        Usuario usuarioInicio = new Usuario(null, "John", "Doe", "j.doe@admin.com", "*admin_12345Joe", tipoAdmin, LocalDate.now(), null);
+        Usuario usuarioInicio = new Usuario(null, "John", "Doe", "j.doe@admin.com", "*admin_12345Joe", tipoAdmin, LocalDate.now());
 
         // El usuario de inicio se va a guardar solo si no existe en la entidad
         if(!usuarioRepository.findByCorreo(usuarioInicio.getCorreo()).isPresent()) {

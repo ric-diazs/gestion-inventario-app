@@ -52,7 +52,7 @@ public class Usuario {
     private LocalDate fechaRegistro = LocalDate.now();
 
     // Relacion uno-a-muchos a tabla 'reporte_problema'
-    @OneToMany(mappedBy = "usuario")
-    @JsonManagedReference(value = "ref-reporte-problema-usuario")
-    private List<ReporteProblema> reportesProblema;
+    //@OneToMany(mappedBy = "usuario")
+    //@JsonManagedReference(value = "ref-reporte-problema-usuario")
+    //private List<ReporteProblema> reportesProblema;
 }
