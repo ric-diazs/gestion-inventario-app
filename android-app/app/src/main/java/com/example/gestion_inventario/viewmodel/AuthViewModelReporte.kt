@@ -42,15 +42,17 @@ class AuthViewModelReporte ( private val reporteProblemaRepository: ReporteProbl
 
     init {
         cargarTipoProblemaApi()
+        cargarNivelPrioridadApi()
+        cargarReporteProblemaApi()
     }
 
-    init {
+    /*init {
         cargarNivelPrioridadApi()
     }
 
     init {
         cargarReporteProblemaApi()
-    }
+    }*/
 
     fun limpiarProblemas() {
         _reportarProblema.value = _reportarProblema.value.copy(

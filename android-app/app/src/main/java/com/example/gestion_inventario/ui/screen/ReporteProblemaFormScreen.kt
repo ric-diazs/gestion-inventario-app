@@ -68,6 +68,8 @@ fun ReporteProblemaFormScreen(
 
     LaunchedEffect(Unit) {
         viewModel.cargarReporteProblemaApi()
+        //viewModel.cargarTipoProblemaApi()
+        //viewModel.cargarNivelPrioridadApi()
     }
 
 
@@ -124,6 +126,9 @@ fun ReporteProblemaFormScreen(
                             .padding(horizontal = 16.dp)
                     ) {
                         items(reporteProblema) { reporte ->
+                            val nivelPrioridad = viewModel.obtenerNivelPrioridad(reporte.id)
+                            val tipoProblema = viewModel.obtenerTipoProblema(reporte.id)
+
                             Card(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -135,10 +140,11 @@ fun ReporteProblemaFormScreen(
                             ) {
                                 Column(modifier = Modifier.padding(16.dp)) {
                                     Text(
-                                        text = "${reporte.correo} ${reporte.tipoProblema?.tipoProblema?: "Sin tipo"}",
+                                        text = "${reporte.correo}",
                                         fontWeight = FontWeight.Bold
                                     )
-                                    Text(text = reporte.nivelPrioridad?.nivelPrioridad?: "Sin prioridad")
+                                    Text(text = "Tipo: ${tipoProblema?.tipoProblema ?: "Sin tipo"}")
+                                    Text(text = "Nivel: ${nivelPrioridad?.nivelPrioridad ?: "Sin prioridad"}")
                                     Text(text = reporte.descripcion)
                                 }
                             }
